@@ -17,6 +17,7 @@ header p{margin:0;color:var(--mut);max-width:60ch}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
 @media(max-width:620px){.tiles{grid-template-columns:1fr}h1{font-size:24px}}
 .tile{display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:18px;background:var(--card);color:var(--ink);border:2px solid var(--bd);border-radius:14px;cursor:pointer;font:inherit;transition:border-color .15s,background .15s}
+a.tile{text-decoration:none}.tile[hidden]{display:none}
 .tile:hover{border-color:var(--ac)}
 .tile[aria-selected="true"]{border-color:var(--ac);background:var(--soft)}
 .tile .ic{flex:none;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--ac)}
@@ -79,14 +80,20 @@ footer{margin-top:22px;color:var(--mut);font-size:13px}
 <button class="tile" id="tl-ins" role="tab" aria-selected="false" aria-controls="p-ins" type="button">
 <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
 <span><b>Insurance cover</b><span class="d">Download your personal accident cover.</span></span></button>
+<a class="tile" id="nita" href="/api/nita" download hidden>
+<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 20h14"/></svg></span>
+<span><b>NITA form</b><span class="d">Download the NITA attachment form.</span></span></a>
 </div>
 
 <section class="panel" id="p-letter" role="tabpanel" aria-labelledby="tl-letter">
 <h2>Attachment letter</h2>
 <p class="lead">Fill in your details exactly as you want them on the letter.</p>
 <div class="grid">
+<div class="full"><label for="dp">Department</label>
+<select id="dp"><option value="">Select your department</option></select></div>
 <div class="full"><label for="co">Course</label>
-<select id="co"><option value="">Select your course</option></select></div>
+<select id="co" disabled><option value="">Select your department first</option></select>
+<div class="hint" id="cn" hidden></div></div>
 <div class="full"><label for="pr">Period of attachment</label>
 <select id="pr"><option value="">Select the period</option></select></div>
 <div class="full"><label for="ln">Full name</label><input id="ln" autocomplete="name" placeholder="e.g. KABIRU ELIUD GATHUTHI"></div>
@@ -158,8 +165,18 @@ var C={};
 var SETTINGS={policyNumber:"",insurer:"",policyStart:"2000-01-01",policyEnd:"2000-01-01",issueDate:"2000-01-01"};
 var COVER_BG="cover_bg.jpg";
 function api(path,opt){return fetch("/api/"+path,opt).then(function(r){return r.json()})}
-(function(){api("courses").then(function(d){var sel=document.getElementById("co");
- (d.courses||[]).forEach(function(c){C[c.key]=[c.title,c.percent,c.units];var o=document.createElement("option");o.value=c.key;o.textContent=c.title;sel.appendChild(o)});
+var ALLC=[];
+function fillCourses(){var dp=document.getElementById("dp").value,sel=document.getElementById("co");sel.textContent="";
+ var o0=document.createElement("option");o0.value="";o0.textContent=dp?"Select your course":"Select your department first";sel.appendChild(o0);
+ ALLC.filter(function(c){return c.dept===dp}).forEach(function(c){var o=document.createElement("option");o.value=c.key;o.textContent=c.title+(c.units.length?"":" (coming soon)");sel.appendChild(o)});
+ sel.disabled=!dp;note();if(typeof render==="function")render()}
+function note(){var n=document.getElementById("cn"),t=C[document.getElementById("co").value];
+ n.hidden=!(t&&!t[2].length);n.textContent=n.hidden?"":"The units for this course have not been added yet. Please check again soon, or see the Industrial Liaison Office."}
+(function(){api("courses").then(function(d){var dsel=document.getElementById("dp");ALLC=d.courses||[];
+ (d.departments||[]).forEach(function(n){if(ALLC.some(function(c){return c.dept===n})){var o=document.createElement("option");o.value=n;o.textContent=n;dsel.appendChild(o)}});
+ ALLC.forEach(function(c){C[c.key]=[c.title,c.percent,c.units]});
+ if(d.nita)document.getElementById("nita").hidden=false;
+ dsel.addEventListener("change",fillCourses);document.getElementById("co").addEventListener("change",note);
  render()}).catch(function(){var m=document.getElementById("lm");m.className="msg err";m.textContent="Could not load the course list. Check your connection and refresh the page."})})();
 var $=function(i){return document.getElementById(i)},te=new TextEncoder();
 function list(a){return a.length<2?a.join("")+".":a.length===2?a[0]+" and "+a[1]+".":a.slice(0,-1).join(", ")+", and "+a[a.length-1]+"."}
@@ -195,9 +212,9 @@ function render(){
  var t=C[$("co").value];
  $("pn").textContent=cleanName($("ln").value);$("pa").textContent=cleanAdm($("la").value);
  $("pt").textContent=$("lt").value.trim();$("pe").textContent=$("le").value.trim();
- if(t){$("pc").textContent=t[0]+".";$("pp").textContent=t[1];$("pu").textContent=list(t[2])}
+ if(t&&t[2].length){$("pc").textContent=t[0]+".";$("pp").textContent=t[1];$("pu").textContent=list(t[2])}
  else{$("pc").textContent="";$("pp").textContent="";$("pu").textContent=""}
- $("pd").textContent=$("pr").value;$("pnum").textContent=(insured&&LREC&&LREC.p)||SETTINGS.policyNumber;$("pins").textContent=SETTINGS.insurer;
+ $("pd").textContent=$("pr").value;$("pnum").textContent=(insured&&LREC&&LREC.p)||SETTINGS.policyNumber;$("pins").textContent=(insured&&LREC&&LREC.ins)||SETTINGS.insurer;
  $("pol").style.display=insured?"":"none";fit();
 }
 var timer;
@@ -252,7 +269,9 @@ function waitImgs(el){return Promise.all([].map.call(el.querySelectorAll("img"),
 $("ld").addEventListener("click",async function(){
  var c=$("co").value,n=cleanName($("ln").value),a=cleanAdm($("la").value),t=$("lt").value.replace(/[\s-]/g,""),e=$("le").value.trim();
  say("lm","");
+ if(!$("dp").value){say("lm","err","Select your department.");return}
  if(!c){say("lm","err","Select your course.");return}
+ if(!C[c][2].length){say("lm","err","The units for this course have not been added yet. Please check again soon, or see the Industrial Liaison Office.");return}
  if(!$("pr").value){say("lm","err","Select the period of attachment.");return}
  if(n.length<3){say("lm","err","Enter your full name.");return}
  if(a.length<6){say("lm","err","Enter your full admission number.");return}
@@ -323,7 +342,7 @@ $("iq").addEventListener("input",function(){
 $("rqo").addEventListener("click",function(){
  var f=$("rqf"),open=f.hidden;f.hidden=!open;if(!open)return;
  var sel=$("rco");sel.textContent="";var o0=document.createElement("option");o0.value="";o0.textContent="Select your course";sel.appendChild(o0);
- [].forEach.call($("co").options,function(o){if(o.value){var x=document.createElement("option");x.value=o.textContent;x.textContent=o.textContent;sel.appendChild(x)}});
+ ALLC.forEach(function(c){var x=document.createElement("option");x.value=c.title;x.textContent=c.title;sel.appendChild(x)});
  var q=$("iq").value.trim();if(q&&!$("rn").value&&!$("ra").value){if(/\d/.test(q))$("ra").value=q.toUpperCase();else $("rn").value=q.toUpperCase()}
  $("rn").focus()});
 $("rqs").addEventListener("click",async function(){

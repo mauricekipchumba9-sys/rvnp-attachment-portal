@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ILO representatives - units covered</title>
+<style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#12304f;--mut:#566b80;--ac:#1d5fa6;--acd:#154a85;--soft:#e4eefa;--bd:#c7d3e0;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1722;--card:#16222f;--ink:#e6eef7;--mut:#9db0c3;--ac:#6fb0f5;--acd:#8cc2fa;--soft:#1c3250;--bd:#2f4358;--in:#101b27;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#0b1420}}
+@font-face{font-family:"CoverFont";src:url(cover_font.ttf) format("truetype")}
+*,*:before,*:after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:28px 16px 48px}
+header{margin-bottom:22px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+header p{margin:0;color:var(--mut);max-width:60ch}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:620px){.tiles{grid-template-columns:1fr}h1{font-size:24px}}
+.tile{display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:18px;background:var(--card);color:var(--ink);border:2px solid var(--bd);border-radius:14px;cursor:pointer;font:inherit;transition:border-color .15s,background .15s}
+a.tile{text-decoration:none}.tile[hidden]{display:none}
+.tile:hover{border-color:var(--ac)}
+.tile[aria-selected="true"]{border-color:var(--ac);background:var(--soft)}
+.tile .ic{flex:none;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--ac)}
+.tile[aria-selected="true"] .ic{background:var(--ac);color:var(--on)}
+.tile .ic svg{width:30px;height:30px}
+.tile b{display:block;font-size:17px;margin-bottom:2px}
+.tile span.d{display:block;color:var(--mut);font-size:14px;line-height:1.35}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px}
+.panel[hidden]{display:none}
+.panel h2{font-size:19px;margin:0 0 4px}
+.panel .lead{margin:0 0 18px;color:var(--mut);font-size:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:5px}
+input,select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--bd);border-radius:9px;background:var(--in);color:var(--ink);font:inherit}
+select{appearance:auto}
+.hint{font-size:13px;color:var(--mut);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 22px;border:0;border-radius:10px;background:var(--ac);color:var(--on);font-weight:600;font-size:16px;font-family:inherit;cursor:pointer}
+.btn:hover{background:var(--acd)}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn svg{width:20px;height:20px}
+.msg{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:15px}
+.msg:empty{display:none}
+.msg.err{background:var(--erb);color:var(--er)}
+.msg.ok{background:var(--okb);color:var(--ok)}
+.msg.info{background:var(--soft);color:var(--ink)}
+.actions{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sug{margin-top:6px;border:1px solid var(--bd);border-radius:10px;background:var(--card);overflow:hidden}
+.sug button{display:block;width:100%;text-align:left;padding:11px 14px;border:0;border-bottom:1px solid var(--bd);background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.sug button:last-child{border-bottom:0}
+.sug button:hover,.sug button:focus-visible,.sug button.on{background:var(--soft)}
+.sug b{display:block;font-size:15px}.sug span{display:block;font-size:13px;color:var(--mut)}
+.reqbox{margin-top:18px;padding-top:16px;border-top:1px solid var(--bd)}
+.btn.sec{background:var(--soft);color:var(--ink);border:1px solid var(--bd)}
+.pvh{margin:22px 0 8px;font-weight:600;font-size:14px;color:var(--mut)}
+.pv{overflow:hidden;border:1px solid var(--bd);border-radius:10px;background:#97BFEB}
+footer{margin-top:22px;color:var(--mut);font-size:13px}
+/* letter (A4 at 794x1123) */
+#L{width:794px;height:1123px;background:#97BFEB;color:#000;font:14.67px/1.42 Arial,Helvetica,sans-serif;position:relative;transform-origin:top left;padding:20px 76px 0}
+#L .h{display:block;margin:0 auto 8px;width:640px}#L .ft{position:absolute;bottom:26px;left:232px;width:330px}
+#L .r{display:flex;justify-content:space-between;font-weight:700;font-size:13.5px;margin:8px 0 14px}
+#L .d{margin:0 0 8px}#L .j{text-align:justify;margin:0 0 8px}
+#L .ln{display:flex;align-items:flex-end;gap:6px;margin:0 0 9px}
+#L .fd{flex:1;border-bottom:1.5px dotted #000;min-height:20px;padding:0 4px;font-weight:400}
+#L .sg{position:relative;margin-top:6px;height:92px}#L .sg img{position:absolute;left:92px;top:-2px;width:205px}
+#L .sg div{position:relative}
+
+textarea{width:100%;min-height:170px;padding:10px 12px;border:1px solid var(--bd);border-radius:9px;background:var(--in);color:var(--ink);font:inherit;resize:vertical}
+</style></head><body>
+<div class="wrap" style="max-width:640px;margin:0 auto;padding:20px 16px 40px">
+<header><h1>ILO representatives</h1>
+<p>Rift Valley National Polytechnic. Send the units your students have covered so far. They are used on the attachment letters once the Industrial Liaison Office approves them.</p></header>
+<section class="panel" style="margin-top:18px">
+<h2>Units covered</h2>
+<p class="lead">Choose your department and course. If the course already has units, they appear below: edit them and send. Put one unit on each line.</p>
+<div class="grid">
+<div class="full"><label for="dp">Department</label><select id="dp"><option value="">Select your department</option></select></div>
+<div class="full"><label for="co">Course</label><select id="co" disabled><option value="">Select your department first</option></select></div>
+<div class="full" id="nw" hidden><label for="nt">Course name and level</label><input id="nt" placeholder="e.g. DRONE TECHNOLOGY LEVEL 5"><div class="hint">The Industrial Liaison Office will add this course to the department when it approves your units.</div></div>
+<div class="full"><label for="cp">Coursework covered so far (%)</label><input id="cp" type="number" inputmode="numeric" min="0" max="100" placeholder="e.g. 75"></div>
+<div class="full"><label for="cu">Units covered (one per line)</label><textarea id="cu" placeholder="Install Conduit System&#10;Install Trunking System"></textarea></div>
+<div><label for="rn">Your name</label><input id="rn" autocomplete="name" placeholder="ILO representative"></div>
+<div><label for="rp">Phone (optional)</label><input id="rp" type="tel" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX"></div>
+</div>
+<div class="msg" id="m" role="status"></div>
+<div class="actions"><button class="btn" id="go" type="button">Send units</button></div>
+</section>
+<footer>Your submission goes to the Industrial Liaison Office for approval. It does not change student letters until approved.</footer>
+</div>
+<script>
+var $=function(i){return document.getElementById(i)},ALL=[];
+function say(c,t){var m=$("m");m.className="msg"+(c?" "+c:"");m.textContent=t||""}
+fetch("/api/courses").then(function(r){return r.json()}).then(function(d){ALL=d.courses||[];
+ (d.departments||[]).forEach(function(n){if(ALL.some(function(c){return c.dept===n})||n!=="Other courses"){var o=document.createElement("option");o.value=n;o.textContent=n;$("dp").appendChild(o)}})}).catch(function(){say("err","Could not load the courses. Check your connection and refresh.")});
+$("dp").addEventListener("change",function(){var dp=this.value,sel=$("co");sel.textContent="";
+ var o0=document.createElement("option");o0.value="";o0.textContent=dp?"Select the course":"Select your department first";sel.appendChild(o0);
+ ALL.filter(function(c){return c.dept===dp}).forEach(function(c){var o=document.createElement("option");o.value=c.key;o.textContent=c.title+(c.units.length?"":" (no units yet)");sel.appendChild(o)});
+ if(dp){var n=document.createElement("option");n.value="__new";n.textContent="My course is not listed";sel.appendChild(n)}
+ sel.disabled=!dp;pick()});
+function pick(){var k=$("co").value,c=ALL.find(function(x){return x.key===k});$("nw").hidden=k!=="__new";
+ $("cp").value=c&&c.units.length?c.percent:"";$("cu").value=c?c.units.join("\n"):""}
+$("co").addEventListener("change",pick);
+$("go").addEventListener("click",async function(){say("");var k=$("co").value,b=this;
+ if(!$("dp").value){say("err","Select your department.");return}
+ if(!k){say("err","Select the course.");return}
+ if(k==="__new"&&$("nt").value.trim().length<3){say("err","Type the name of the course with its level.");return}
+ if($("cp").value===""||+$("cp").value<0||+$("cp").value>100){say("err","Enter the coursework covered so far, between 0 and 100.");return}
+ if(!$("cu").value.trim()){say("err","Add the units covered, one per line.");return}
+ if($("rn").value.trim().length<3){say("err","Enter your name.");return}
+ b.disabled=true;
+ try{var r=await fetch("/api/ilo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:k==="__new"?"":k,newTitle:$("nt").value,dept:$("dp").value,percent:$("cp").value,units:$("cu").value.split("\n"),rep:$("rn").value,phone:$("rp").value})});
+  var d=await r.json();if(!r.ok)say("err",d.error||"Something went wrong.");
+  else{say("ok","Thank you. Your units were sent to the Industrial Liaison Office for approval. You can send another course.");$("co").value="";pick()}}
+ catch(e){say("err","Could not send. Check your connection and try again.")}
+ b.disabled=false});
+</script></body></html>
