@@ -70,6 +70,24 @@ function samePassword(input) {
 
 /* ---------- validation ---------- */
 class Bad extends Error {}
+/* optional per-student policy details: policy number p, issue date i, start s, expiry e (blank = use the defaults) */
+function pdate(v) {
+  v = clean(v, 40); if (!v) return "";
+  let y, m, d, x;
+  if ((x = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) { y = +x[1]; m = +x[2]; d = +x[3]; }
+  else if ((x = v.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/))) { d = +x[1]; m = +x[2]; y = +x[3]; }
+  else { const t = new Date(v); if (isNaN(t)) throw new Bad("Could not read the date \"" + v + "\". Use day/month/year, e.g. 13/07/2026."); y = t.getFullYear(); m = t.getMonth() + 1; d = t.getDate(); }
+  const t = new Date(Date.UTC(y, m - 1, d));
+  if (t.getUTCFullYear() !== y || t.getUTCMonth() !== m - 1 || t.getUTCDate() !== d) throw new Bad("\"" + v + "\" is not a real date.");
+  return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+}
+function policyOverrides(o, settings) {
+  const out = {}, p = clean(o.p, 60), i = pdate(o.i), st = pdate(o.s), e = pdate(o.e);
+  if (p) out.p = p; if (i) out.i = i; if (st) out.s = st; if (e) out.e = e;
+  const a = out.s || settings.policyStart, b = out.e || settings.policyEnd;
+  if (b < a) throw new Bad("The expiry date is before the start date.");
+  return out;
+}
 function cleanSettings(x) {
   const o = {
     policyNumber: clean(x.policyNumber, 60), insurer: clean(x.insurer, 80),
@@ -137,10 +155,10 @@ export default async (req) => {
         const byName = words.length > 0 && words.every((w) => nm.includes(w));
         if (!byAdm && !byName) continue;
         const rank = (adm.startsWith(qAdm) || nm.startsWith(words[0] || "~")) ? 0 : 1;
-        out.push({ rank, n: r.n, a: r.a, c: r.c });
+        out.push({ rank, n: r.n, a: r.a, c: r.c, p: r.p, i: r.i, s: r.s, e: r.e });
       }
       out.sort((x, y) => x.rank - y.rank || x.n.localeCompare(y.n));
-      return json({ matches: out.slice(0, 8).map(({ n, a, c }) => ({ n, a, c })), settings: await getJSON(s, "settings", DEFAULT_SETTINGS) });
+      return json({ matches: out.slice(0, 8).map(({ rank, ...r }) => r), settings: await getJSON(s, "settings", DEFAULT_SETTINGS) });
     }
 
     if (method === "POST" && path === "request") {
@@ -186,13 +204,17 @@ export default async (req) => {
       if (method === "POST" && path === "admin/students") {
         const rows = Array.isArray(body.rows) ? body.rows : [];
         const cur = body.mode === "replace" ? {} : await getJSON(s, "students", {});
+        const settings = await getJSON(s, "settings", DEFAULT_SETTINGS);
         let added = 0, updated = 0, skipped = 0;
         for (const r of rows) {
           const n = clean(r.n, 120).toUpperCase(), a = clean(r.a, 60).toUpperCase().replace(/\s+/g, ""), c = clean(r.c, 40);
           if (n.length < 3 || a.length < 4) { skipped++; continue; }
           const id = sid(n, a);
+          let ov;
+          try { ov = policyOverrides(r, settings); } catch { skipped++; continue; }
+          const keep = cur[id] || {};
           cur[id] ? updated++ : added++;
-          cur[id] = { n, a, c };
+          cur[id] = { n, a, c, ...(Object.keys(ov).length ? ov : { ...(keep.p && { p: keep.p }), ...(keep.i && { i: keep.i }), ...(keep.s && { s: keep.s }), ...(keep.e && { e: keep.e }) }) };
         }
         await s.setJSON("students", cur);
         /* requests that now have a cover on file are done */
@@ -201,6 +223,32 @@ export default async (req) => {
         for (const id of Object.keys(reqs)) if (cur[id]) { delete reqs[id]; cleared++; }
         if (cleared) await s.setJSON("requests", reqs);
         return json({ added, updated, skipped, cleared, total: Object.keys(cur).length });
+      }
+      if (method === "POST" && path === "admin/approve") {
+        const settings = await getJSON(s, "settings", DEFAULT_SETTINGS);
+        const reqs = await getJSON(s, "requests", {});
+        const cur = await getJSON(s, "students", {});
+        const ids = body.all ? Object.keys(reqs) : [clean(body.id, 200)];
+        let approved = 0;
+        const ov = body.all ? {} : policyOverrides(body, settings);
+        for (const id of ids) {
+          const r = reqs[id]; if (!r) continue;
+          cur[id] = { n: r.n, a: r.a, c: r.c, ...ov };
+          delete reqs[id]; approved++;
+        }
+        if (!approved) throw new Bad("That request is no longer in the list. Refresh and try again.");
+        await s.setJSON("students", cur); await s.setJSON("requests", reqs);
+        return json({ approved, total: Object.keys(cur).length, requests: Object.keys(reqs).length });
+      }
+      if (method === "PUT" && path.startsWith("admin/students/")) {
+        const id = path.split("/")[2];
+        const settings = await getJSON(s, "settings", DEFAULT_SETTINGS);
+        const cur = await getJSON(s, "students", {});
+        if (!cur[id]) throw new Bad("Student not found. Refresh and try again.");
+        const ov = policyOverrides(body, settings);
+        cur[id] = { n: cur[id].n, a: cur[id].a, c: cur[id].c, ...ov };
+        await s.setJSON("students", cur);
+        return json({ student: { id, ...cur[id] } });
       }
       if (method === "DELETE" && (path === "admin/requests" || path.startsWith("admin/requests/"))) {
         const id = path.split("/")[2];

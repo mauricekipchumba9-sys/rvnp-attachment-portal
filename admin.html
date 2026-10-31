@@ -36,6 +36,13 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd)}th{colo
 .scroll{max-height:420px;overflow:auto;border:1px solid var(--bd);border-radius:10px;margin-top:10px}
 .course{border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px;background:var(--bg)}
 .radio{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}.radio label{font-weight:400;display:flex;gap:6px;align-items:center;margin:0}.radio input{width:auto;min-height:0}
+.btn.ok{background:var(--okb);color:var(--ok);min-height:34px;padding:4px 12px;font-size:14px}
+.btn svg{width:16px;height:16px;margin-right:5px;flex:none}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.tag{display:inline-block;background:var(--soft);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;margin-left:6px}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--ink);padding:20px;width:min(480px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.chk{display:flex;gap:8px;align-items:center;font-weight:600;margin:6px 0 10px}.chk input{width:auto;min-height:0}
 .badge{display:inline-block;background:var(--soft);padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600}
 </style></head><body>
 <div class="wrap">
@@ -86,7 +93,7 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd)}th{colo
 
 <div class="card">
 <h2>Upload students with insurance</h2>
-<p class="lead">Upload your Excel (.xlsx) or CSV list. Columns: <b>Class code</b>, <b>Student name</b>, <b>Admission number</b>. Your current database file works as it is. A student can download a cover only if they are on this list.</p>
+<p class="lead">Upload your Excel (.xlsx) or CSV list. Columns: <b>Class code</b>, <b>Student name</b>, <b>Admission number</b>. Your current database file works as it is. Optional extra columns for students on a <b>different policy</b>: <b>Policy number</b>, <b>Issue date</b>, <b>Start date</b>, <b>Expiry date</b> (day/month/year). Leave them blank to use the default policy above. A student can download a cover only if they are on this list.</p>
 <input id="file" type="file" accept=".xlsx,.xls,.csv">
 <div class="radio">
 <label><input type="radio" name="mode" value="merge" checked> Add new students and update existing ones</label>
@@ -107,7 +114,7 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd)}th{colo
 </div>
 <div class="msg" id="ma"></div>
 <div class="row"><input id="q" placeholder="Search name, admission number or class" style="max-width:340px"><button class="btn sec" id="csv">Download list (CSV)</button></div>
-<div class="scroll"><table><thead><tr><th>Class</th><th>Name</th><th>Admission no.</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+<div class="scroll"><table><thead><tr><th>Class</th><th>Name</th><th>Admission no.</th><th>Policy</th></tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 </div>
 
@@ -115,10 +122,10 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd)}th{colo
 <div id="s-req" hidden>
 <div class="card">
 <h2>Cover requests</h2>
-<p class="lead">Students who could not find their cover send their name, class, course and admission number here. Download the list, prepare their covers, then upload the finished list under <b>Insurance covers</b>. Once uploaded, those students can download their covers and they disappear from this list.</p>
-<div class="row" style="margin-top:0"><button class="btn" id="rcsv">Download requests (CSV)</button><button class="btn sec" id="rrf">Refresh</button><button class="btn del" id="rall">Clear all</button></div>
+<p class="lead">Students who could not find their cover send their name, class, course and admission number here. Press <b>Approve</b> to give a student their cover: they can download it straight away and move to the students list, using the default policy unless you choose a different one. <b>Remove</b> deletes the request. You can also still upload a finished list under <b>Insurance covers</b>.</p>
+<div class="row" style="margin-top:0"><button class="btn" id="rapp">Approve all (default policy)</button><button class="btn sec" id="rcsv">Download requests (CSV)</button><button class="btn sec" id="rrf">Refresh</button><button class="btn del" id="rall">Clear all</button></div>
 <div class="msg" id="mr"></div>
-<div class="scroll"><table><thead><tr><th>#</th><th>Class</th><th>Name</th><th>Admission no.</th><th>Course</th><th>Requested</th><th></th></tr></thead><tbody id="rtb"></tbody></table></div>
+<div class="scroll"><table><thead><tr><th>#</th><th>Class</th><th>Name</th><th>Admission no.</th><th>Course</th><th>Requested</th></tr></thead><tbody id="rtb"></tbody></table></div>
 </div>
 </div>
 
@@ -134,6 +141,21 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd)}th{colo
 </div>
 </div>
 </div>
+
+<dialog id="dlg">
+<h3 id="dt"></h3><p class="lead" id="ds" style="margin-bottom:10px"></p>
+<label class="chk"><input type="checkbox" id="dx"> This student is on a different policy</label>
+<div id="df" class="grid" hidden>
+<div class="full"><label for="dp">Policy number</label><input id="dp"></div>
+<div><label for="di">Date of issue</label><input id="di" type="date"></div>
+<div></div>
+<div><label for="dst">Start date</label><input id="dst" type="date"></div>
+<div><label for="de">Expiry date</label><input id="de" type="date"></div>
+</div>
+<div class="hint" id="dh"></div>
+<div class="msg" id="dm"></div>
+<div class="row"><button class="btn" id="dok">Approve</button><button class="btn sec" id="dno">Cancel</button></div>
+</dialog>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -175,26 +197,31 @@ function drawStudents(){
  var q=$("q").value.trim().toUpperCase(),list=D.students.slice().sort(function(a,b){return (a.c+a.n).localeCompare(b.c+b.n)});
  $("cnt").textContent=D.students.length;
  var shown=list.filter(function(r){return !q||(r.n+" "+r.a+" "+r.c).toUpperCase().indexOf(q)>=0}).slice(0,500);
- $("tb").innerHTML=shown.map(function(r){return "<tr><td>"+esc(r.c)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.a)+"</td><td><button class=\"btn del\" data-id=\""+r.id+"\">Remove</button></td></tr>"}).join("")||"<tr><td colspan=4>No students.</td></tr>"}
+ $("tb").innerHTML=shown.map(function(r){var custom=r.p||r.i||r.s||r.e;
+  var pol=custom?esc(r.p||D.settings.policyNumber)+'<span class="tag">custom</span><div class="hint">'+esc(dmy(r.s||D.settings.policyStart))+" - "+esc(dmy(r.e||D.settings.policyEnd))+" &middot; issued "+esc(dmy(r.i||D.settings.issueDate))+"</div>":'<span class="hint">Default</span>';
+  return "<tr><td>"+esc(r.c)+"</td><td>"+esc(r.n)+'<div style="margin-top:8px"><div class="acts"><button class="btn sec" data-pol="'+r.id+'" style="min-height:34px;padding:4px 12px;font-size:14px">Policy</button><button class="btn del" data-id="'+r.id+'">Remove</button></div></div></td><td>'+esc(r.a)+"</td><td>"+pol+"</td></tr>"}).join("")||"<tr><td colspan=4>No students.</td></tr>"}
+function dmy(iso){var p=String(iso).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:iso}
 $("q").oninput=drawStudents;
-$("tb").onclick=async function(e){var id=e.target.getAttribute("data-id");if(!id)return;
+$("tb").onclick=async function(e){var pid=e.target.getAttribute("data-pol");if(pid){openDlg("edit",D.students.find(function(x){return x.id===pid}));return}
+ var id=e.target.getAttribute("data-id");if(!id)return;
  var r=D.students.find(function(x){return x.id===id});if(!confirm("Remove "+r.n+" ("+r.a+")? They will no longer be able to download a cover."))return;
  try{await call("DELETE","admin/students/"+id);D.students=D.students.filter(function(x){return x.id!==id});drawStudents()}catch(x){say("ma","err",x.message)}};
 $("add").onclick=async function(){say("ma","");try{
  var d=await call("POST","admin/students",{mode:"merge",rows:[{c:$("ac").value,n:$("an").value,a:$("aa").value}]});
  if(d.skipped)throw new Error("Enter the student name and admission number.");
  D=await call("GET","admin/data");drawStudents();drawReqs();say("ma","ok","Student added.");$("ac").value=$("an").value=$("aa").value=""}catch(e){say("ma","err",e.message)}};
-$("csv").onclick=function(){var l=["Class code,Student name,Admission number"].concat(D.students.map(function(r){return [r.c,r.n,r.a].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",")}));
+$("csv").onclick=function(){var l=["Class code,Student name,Admission number,Policy number,Issue date,Start date,Expiry date"].concat(D.students.map(function(r){return [r.c,r.n,r.a,r.p||"",r.i?dmy(r.i):"",r.s?dmy(r.s):"",r.e?dmy(r.e):""].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",")}));
  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([l.join("\n")],{type:"text/csv"}));a.download="students_with_cover.csv";a.click()};
 
 
 /* cover requests */
 function drawReqs(){var R=D.requests||[];$("rcnt").textContent=R.length;
  $("rtb").innerHTML=R.map(function(r,i){var t=r.t?new Date(r.t).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}):"";
-  return "<tr><td>"+(i+1)+"</td><td>"+esc(r.c)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.a)+"</td><td>"+esc(r.course)+"</td><td>"+esc(t)+"</td><td><button class=\"btn del\" data-rq=\""+r.id+"\">Remove</button></td></tr>"}).join("")||"<tr><td colspan=7>No requests right now.</td></tr>"}
+  return "<tr><td>"+(i+1)+"</td><td>"+esc(r.c)+"</td><td>"+esc(r.n)+'<div style="margin-top:8px"><div class="acts"><button class="btn ok" data-ap="'+r.id+'" aria-label="Approve '+esc(r.n)+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Approve</button><button class="btn del" data-rq="'+r.id+'" aria-label="Remove '+esc(r.n)+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Remove</button></div></div></td><td>'+esc(r.a)+"</td><td>"+esc(r.course)+"</td><td>"+esc(t)+"</td></tr>"}).join("")||"<tr><td colspan=6>No requests right now.</td></tr>"}
 async function reload(){D=await call("GET","admin/data");drawStudents();drawReqs()}
 $("rrf").onclick=async function(){say("mr","");try{await reload();say("mr","ok","Updated.")}catch(e){say("mr","err",e.message)}};
-$("rtb").onclick=async function(e){var id=e.target.getAttribute("data-rq");if(!id)return;
+$("rtb").onclick=async function(e){var ap=e.target.closest("[data-ap]");if(ap){openDlg("approve",D.requests.find(function(x){return x.id===ap.getAttribute("data-ap")}));return}
+ var rb=e.target.closest("[data-rq]");var id=rb&&rb.getAttribute("data-rq");if(!id)return;
  var r=D.requests.find(function(x){return x.id===id});if(!confirm("Remove the request from "+r.n+" ("+r.a+")?"))return;
  try{await call("DELETE","admin/requests/"+id);D.requests=D.requests.filter(function(x){return x.id!==id});drawReqs()}catch(x){say("mr","err",x.message)}};
 $("rall").onclick=async function(){if(!(D.requests||[]).length)return;if(!confirm("Clear all "+D.requests.length+" requests? Download the list first if you still need it."))return;
@@ -203,15 +230,37 @@ $("rcsv").onclick=function(){var R=D.requests||[];if(!R.length){say("mr","err","
  var l=["Class code,Student name,Admission number,Course"].concat(R.map(function(r){return [r.c,r.n,r.a,r.course].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",")}));
  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="cover_requests.csv";a.click()};
 
+/* approve / policy dialog */
+var DLG=null;
+function openDlg(mode,r){if(!r)return;DLG={mode:mode,r:r};var d=D.settings,custom=!!(r.p||r.i||r.s||r.e);
+ $("dt").textContent=mode==="approve"?"Approve cover":"Policy for this student";
+ $("ds").textContent=r.n+" ("+r.a+") - "+r.c;
+ $("dx").checked=custom;$("df").hidden=!custom;
+ $("dp").value=r.p||d.policyNumber;$("di").value=r.i||d.issueDate;$("dst").value=r.s||d.policyStart;$("de").value=r.e||d.policyEnd;
+ $("dh").textContent="Default policy: "+d.policyNumber+", "+dmy(d.policyStart)+" - "+dmy(d.policyEnd)+", issued "+dmy(d.issueDate)+(mode==="approve"?". Leave the box unticked to use it.":". Untick the box to go back to it.");
+ $("dok").textContent=mode==="approve"?"Approve":"Save";say("dm","");$("dlg").showModal()}
+$("dx").onchange=function(){$("df").hidden=!this.checked};
+$("dno").onclick=function(){$("dlg").close()};
+$("dok").onclick=async function(){if(!DLG)return;var b=this,body=$("dx").checked?{p:$("dp").value,i:$("di").value,s:$("dst").value,e:$("de").value}:{};
+ b.disabled=true;say("dm","");
+ try{if(DLG.mode==="approve"){body.id=DLG.r.id;var d=await call("POST","admin/approve",body);$("dlg").close();await reload();say("mr","ok",DLG.r.n+" approved. They can download their cover now.")}
+  else{await call("PUT","admin/students/"+DLG.r.id,body);$("dlg").close();await reload();say("ma","ok","Policy details saved for "+DLG.r.n+".")}}
+ catch(e){say("dm","err",e.message)}b.disabled=false};
+$("rapp").onclick=async function(){var n=(D.requests||[]).length;if(!n){say("mr","err","There are no requests to approve.");return}
+ if(!confirm("Approve all "+n+" requests with the default policy? Those students can then download their covers."))return;
+ try{var d=await call("POST","admin/approve",{all:true});await reload();say("mr","ok",d.approved+" approved. They can download their covers now.")}catch(e){say("mr","err",e.message)}};
+
 /* file upload (Excel / CSV) */
-function pick(o,names){var k=Object.keys(o).find(function(x){return names.indexOf(x.toLowerCase().replace(/[^a-z]/g,""))>=0});return k?String(o[k]).trim():""}
+function pick(o,names){var k=Object.keys(o).find(function(x){return names.indexOf(x.toLowerCase().replace(/[^a-z]/g,""))>=0});if(!k)return "";var v=o[k];
+ if(v instanceof Date){var t=new Date(v.getTime()+12*3600000);return t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2)}
+ return String(v).trim()}
 $("file").onchange=async function(){
  ROWS=null;$("up").disabled=true;say("mu","");var f=this.files[0];if(!f)return;
  if(!window.XLSX){say("mu","err","The spreadsheet reader did not load. Check your connection and try again.");return}
- try{var wb=XLSX.read(await f.arrayBuffer(),{type:"array"});
+ try{var wb=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true});
   var sh=wb.Sheets["Students"]||wb.Sheets[wb.SheetNames[0]];
-  var raw=XLSX.utils.sheet_to_json(sh,{defval:"",raw:false});
-  ROWS=raw.map(function(o){return{c:pick(o,["classcode","class"]),n:pick(o,["studentname","name","fullname"]),a:pick(o,["admissionnumber","admissionno","admno","admission"])}}).filter(function(r){return r.n&&r.a});
+  var raw=XLSX.utils.sheet_to_json(sh,{defval:"",raw:true});
+  ROWS=raw.map(function(o){return{c:pick(o,["classcode","class"]),n:pick(o,["studentname","name","fullname"]),a:pick(o,["admissionnumber","admissionno","admno","admission"]),p:pick(o,["policynumber","policyno","policy"]),i:pick(o,["issuedate","dateofissue","dateissued","issued"]),s:pick(o,["startdate","policystart","start","from","commencementdate"]),e:pick(o,["expirydate","enddate","policyend","expiry","end","expires","expirationdate","to"])}}).filter(function(r){return r.n&&r.a});
   if(!ROWS.length){ROWS=null;say("mu","err","No students found. Check the column names: Class code, Student name, Admission number.");return}
   say("mu","info","Found "+ROWS.length+" students in the file. Click Upload list to save them.");$("up").disabled=false
  }catch(e){say("mu","err","Could not read that file.")}};

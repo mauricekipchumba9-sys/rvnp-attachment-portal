@@ -188,7 +188,7 @@ function tab(w){var l=w==="l";$("tl-letter").setAttribute("aria-selected",l);$("
 $("tl-letter").onclick=function(){tab("l")};$("tl-ins").onclick=function(){tab("i")};
 
 /* ---------- attachment letter ---------- */
-var insured=false,seq=0;
+var insured=false,seq=0,LREC=null;
 function fit(){var pv=$("pv"),w=pv.clientWidth,s=Math.min(1,w/794);$("L").style.transform="scale("+s+")";$("sc").style.width="794px";pv.style.height=(1123*s)+"px"}
 window.addEventListener("resize",fit);
 function render(){
@@ -197,7 +197,7 @@ function render(){
  $("pt").textContent=$("lt").value.trim();$("pe").textContent=$("le").value.trim();
  if(t){$("pc").textContent=t[0]+".";$("pp").textContent=t[1];$("pu").textContent=list(t[2])}
  else{$("pc").textContent="";$("pp").textContent="";$("pu").textContent=""}
- $("pd").textContent=$("pr").value;$("pnum").textContent=SETTINGS.policyNumber;$("pins").textContent=SETTINGS.insurer;
+ $("pd").textContent=$("pr").value;$("pnum").textContent=(insured&&LREC&&LREC.p)||SETTINGS.policyNumber;$("pins").textContent=SETTINGS.insurer;
  $("pol").style.display=insured?"":"none";fit();
 }
 var timer;
@@ -207,7 +207,7 @@ function check(){
   var n=$("ln").value.trim(),a=$("la").value.trim(),my=++seq;
   if(n.length<3||a.length<6){insured=false;render();return}
   var r=await inList(n,a);if(my!==seq)return;
-  insured=!!r;render();
+  insured=!!r;LREC=r||null;render();
  },450);
 }
 ["co","pr","ln","la","lt","le"].forEach(function(i){$(i).addEventListener("input",function(){render();if(i==="ln"||i==="la")check()});$(i).addEventListener("change",render)});
@@ -261,7 +261,7 @@ $("ld").addEventListener("click",async function(){
  if(!window.jspdf){say("lm","err","The PDF tools did not load. Check your internet connection and try again.");return}
  var b=this;busy(b,true);
  try{
-  var r=await inList(n,a);insured=!!r;render();
+  var r=await inList(n,a);insured=!!r;LREC=r||null;render();
   var orig=$("L"),h=document.createElement("div"),cv;h.style.cssText="position:absolute;left:-10000px;top:0;width:794px;height:1123px";
   var cl=orig.cloneNode(true);cl.style.transform="none";orig.id="Lpv";cl.id="L";h.appendChild(cl);document.body.appendChild(h);
   try{await waitImgs(cl);if(document.fonts&&document.fonts.ready)await document.fonts.ready;cv=paintLetter(cl,3)}
@@ -284,16 +284,16 @@ async function makeCover(rec){
  cv.width=Math.round(W*S);cv.height=Math.round(H*S);
  var x=cv.getContext("2d");x.drawImage(img,0,0,cv.width,cv.height);x.scale(S,S);
  x.fillStyle="#000";x.textBaseline="alphabetic";x.font="11px CoverFont";
- var d=fmtDate(SETTINGS.issueDate),px=56.64,sf=ord(d.d).replace(/^\d+/,"");
+ var P=rec||{},d=fmtDate(P.i||SETTINGS.issueDate),px=56.64,sf=ord(d.d).replace(/^\d+/,"");
  x.fillText(String(d.d),px,107.4);px+=x.measureText(String(d.d)).width;
  x.font="7px CoverFont";x.fillText(sf,px,103.5);px+=x.measureText(sf).width;
  x.font="11px CoverFont";x.fillText(" "+d.m+","+d.y,px,107.4);
  var vx=186.3;
  x.fillText(rec.n.toUpperCase(),vx,246.0);
- x.fillText(SETTINGS.policyNumber,vx,267.9);
+ x.fillText(P.p||SETTINGS.policyNumber,vx,267.9);
  x.fillText(rec.a,vx,289.9);
  x.fillText(rec.c,vx,338.9);
- x.fillText(dmy(SETTINGS.policyStart)+"-"+dmy(SETTINGS.policyEnd),vx,360.8);
+ x.fillText(dmy(P.s||SETTINGS.policyStart)+"-"+dmy(P.e||SETTINGS.policyEnd),vx,360.8);
  var pd=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
  pd.addImage(cv.toDataURL("image/jpeg",0.93),"JPEG",0,0,210,297);
  return pd.output("blob");

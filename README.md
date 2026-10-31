@@ -41,7 +41,7 @@ To update later: open the repository, **Add file**, then **Upload files**. Files
 
 1. Make sure `ADMIN_PASSWORD` exists under **Site configuration**, **Environment variables**. If you change it, redeploy.
 2. Open `your-site/admin.html` and sign in.
-3. **Insurance covers**: check the policy number, insurer, start and end dates and issue date. Upload the student list (Class code, Student name, Admission number). "Add new and update existing" keeps what is already there. "Replace the whole list" removes anyone not in the file.
+3. **Insurance covers**: check the default policy number, insurer, start and end dates and issue date. Upload the student list (Class code, Student name, Admission number). "Add new and update existing" keeps what is already there. "Replace the whole list" removes anyone not in the file.
 4. **Attachment letters**: check each course's title, percentage and units. Use **+ Add a course** for a new course, then **Save courses**.
 5. Test on a phone: download a letter and compare it with the preview, search a student and download a cover, and send a test cover request.
 6. Share the student link (copy or WhatsApp button on the admin page).
@@ -55,10 +55,20 @@ To update later: open the repository, **Add file**, then **Upload files**. Files
 ## Handling cover requests
 
 1. Admin page, **Cover requests** tab (the counter shows how many are waiting).
-2. Download the list as CSV and prepare the covers.
-3. Add those students to your master list and upload it under **Insurance covers**.
-4. Their requests clear automatically on upload.
-5. Tell the students to search their name again and download.
+2. Each request has two buttons under the student's name:
+   - **Approve**: opens a small box. Leave "This student is on a different policy" unticked to use the default policy, or tick it and enter that student's own policy number, date of issue, start date and expiry date. Press Approve. The student moves to the students list and can download their cover straight away.
+   - **Remove**: deletes the request.
+3. **Approve all (default policy)** approves every waiting request at once.
+4. You can still upload a finished Excel/CSV list under **Insurance covers**. Requests for students on that list clear automatically.
+
+## Students on a different policy
+
+By default every cover uses the policy details saved on the **Insurance covers** tab (policy number, issue date, start, expiry). Some students can have their own:
+- **When approving** a request, tick the "different policy" box (see above).
+- **For a student already on the list**: press **Policy** under their name, tick the box, enter their details and Save. Untick the box and Save to go back to the default.
+- **By upload**: add any of these optional columns to your Excel/CSV: `Policy number`, `Issue date`, `Start date`, `Expiry date` (day/month/year). Leave them blank for students on the default policy. Uploading again without these columns keeps any custom policy already saved.
+- The student's cover (and the policy number in their attachment letter) then shows their own policy. The layout never changes.
+- **Download list (CSV)** includes these columns, so you can keep a full record.
 
 ## Troubleshooting
 
