@@ -21,7 +21,7 @@ a{color:#17803f;font-weight:600}
 <h2 id="loginTitle">Sign in</h2>
 <p class="hint" id="loginHint">Enter your admission number and PIN.</p>
 <div class="grid" style="margin-top:16px">
-<div class="full"><label id="idLabel">Admission number</label><input id="identifier" autocomplete="username" placeholder="EPL6/24S/404930"></div>
+<div class="full"><label id="idLabel">Admission number</label><input id="identifier" autocomplete="username" placeholder=""><div class="hint" id="idFormatHint" hidden>Format: <b>EPL6/24S/404930</b></div></div>
 <div class="full"><label>PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password"></div>
 </div>
 <button class="primary" id="loginBtn">Sign in</button><div class="msg" id="msg"></div>
@@ -60,7 +60,7 @@ $("title").textContent=mode==="staff"?"Staff portal access":"Student portal acce
 $("sub").textContent=mode==="staff"?"HOD, Deputy HOD and ILO representatives must register and wait for administrator approval.":"Register once, then use your admission number and PIN whenever you return.";
 $("loginTitle").textContent=mode==="staff"?"Staff sign in":"Student sign in";
 $("loginHint").textContent=mode==="staff"?"Use your ID number or PF number and PIN.":"Use your admission number and PIN.";
-$("idLabel").textContent=mode==="staff"?"ID number or PF number":"Admission number";
+$("idLabel").textContent=mode==="staff"?"ID number or PF number":"Admission number";$("idFormatHint").hidden=mode!=="student";if(mode==="student")$("identifier").placeholder="EPL6/24S/404930";
 $("staffForm").hidden=mode!=="staff";$("studentForm").hidden=mode==="staff";
 $("regTitle").textContent=mode==="staff"?"Staff registration":"Student registration";
 $("regHint").textContent=mode==="staff"?"Your account stays pending until the administrator approves it.":"Your details and PIN are stored securely in the portal database.";
@@ -69,7 +69,7 @@ function show(box){$("loginBox").hidden=box!=="login";$("regBox").hidden=box!=="
 $("loginTab").onclick=()=>show("login");$("regTab").onclick=()=>show("reg");
 $("role").onchange=()=>{$("deptWrap").hidden=$("role").value!=="rep"};
 async function send(path,body){let r=await fetch("/api/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),d=await r.json();if(!r.ok)throw Error(d.error||"Something went wrong.");return d}
-$("loginBtn").onclick=async()=>{let b=$("loginBtn");$("msg").className="msg";$("msg").textContent="";b.disabled=true;try{let d=await send("auth/login",{role:mode==="staff"?($("role").value):"student",identifier:$("identifier").value,pin:$("pin").value});sessionStorage.setItem("rvnp_user",d.token);sessionStorage.setItem("rvnp_user_role",d.role);location.href=d.role==="student"?"/student.html":d.role==="rep"?"/ilo.html":"/hod.html"}catch(e){$("msg").className="msg err";$("msg").textContent=e.message}b.disabled=false};
+$("loginBtn").onclick=async()=>{let b=$("loginBtn");$("msg").className="msg";$("msg").textContent="";b.disabled=true;try{let d=await send("auth/login",{role:mode==="staff"?"staff":"student",identifier:$("identifier").value,pin:$("pin").value});sessionStorage.setItem("rvnp_user",d.token);sessionStorage.setItem("rvnp_user_role",d.role);location.href=d.role==="student"?"/student.html":d.role==="rep"?"/ilo.html":"/hod.html"}catch(e){$("msg").className="msg err";$("msg").textContent=e.message}b.disabled=false};
 $("regBtn").onclick=async()=>{let b=$("regBtn");$("regMsg").className="msg";$("regMsg").textContent="";b.disabled=true;try{
  if(mode==="staff"){let d=await send("auth/register-staff",{role:$("role").value,dept:$("dept").value,name:$("name").value,idno:$("idno").value,pf:$("pf").value,phone:$("phone").value,pin:$("regPin").value});$("regMsg").className="msg ok";$("regMsg").textContent=d.message;show("login")}
  else {let d=await send("auth/register-student",{name:$("sn").value,adm:$("sa").value,cls:$("sc").value,dept:$("sdept").value,phone:$("st").value,pin:$("sp").value});$("regMsg").className="msg ok";$("regMsg").textContent=d.updated?"Your account was updated. You can now sign in.":"Registration complete. You can now sign in.";show("login")}

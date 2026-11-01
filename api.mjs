@@ -283,7 +283,11 @@ export default async (req) => {
     if (method === "POST" && path === "auth/login") {
       const role=clean(body.role,20).toLowerCase(), identifier=clean(body.identifier,80).toUpperCase().replace(/\s+/g,""), pin=String(body.pin||"");
       const all=await getJSON(s,"accounts",{});
-      const a=Object.values(all).find(x=>x.role===role && ((role==="student"&&x.adm===identifier) || role!=="student"&&(x.idno===identifier||x.pf===identifier)));
+      const a=Object.values(all).find(x=>
+        role==="staff"
+          ? x.role!=="student" && (x.idno===identifier || x.pf===identifier)
+          : x.role===role && ((role==="student"&&x.adm===identifier) || role!=="student"&&(x.idno===identifier||x.pf===identifier))
+      );
       if(!a || !a.salt || pinHash(pin,a.salt)!==a.pinHash) { await new Promise(r=>setTimeout(r,500)); return fail("Wrong login details.",401); }
       if(a.status!=="approved") return fail(a.status==="pending"?"Your account is waiting for administrator approval.":"Your account is not active.",403);
       return json({token:makeAccountToken(a),role:a.role,name:a.name,dept:a.dept||"",id:a.id});
