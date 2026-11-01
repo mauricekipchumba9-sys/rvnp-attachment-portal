@@ -169,7 +169,7 @@ var $=function(i){return document.getElementById(i)},USER_TOKEN=sessionStorage.g
 if(!USER_TOKEN){location.replace("/auth.html?role=staff");throw new Error("Staff sign-in required");}
 function say(id,c,t){var m=$(id);m.className="msg"+(c?" "+c:"");m.textContent=t||""}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-async function api(method,path,body){var r=await fetch("/api/"+path,{method:method,headers:{"Content-Type":"application/json","Authorization":"Bearer "+USER_TOKEN},body:body?JSON.stringify(body):undefined});
+async function api(method,path,body){var r=await fetch("/.netlify/functions/api/"+path,{method:method,headers:{"Content-Type":"application/json","Authorization":"Bearer "+USER_TOKEN},body:body?JSON.stringify(body):undefined});
  var d=await r.json().catch(function(){return{}});if(!r.ok){var e=new Error(d.error||"Something went wrong.");e.status=r.status;throw e}return d}
 async function open_(){try{D=await api("GET","hod/data");$("gate").hidden=true;$("app").hidden=false;SEL={};setFilters(true);draw();if(!window.MKP)window.MKP=RVMarks.mount($("mkbox"),{role:"hod",headers:function(){return{"Authorization":"Bearer "+USER_TOKEN}},onAuthFail:function(){location.replace("/auth.html?role=staff")}})}
  catch(e){if(e.status===401){sessionStorage.removeItem("rvnp_user");sessionStorage.removeItem("rvnp_user_role");location.replace("/auth.html?role=staff")}else say("gm","err",e.message)}}

@@ -116,7 +116,7 @@
     function say(c, t) { msg.className = "msg" + (c ? " " + c : ""); msg.textContent = t || ""; }
     async function call(method, path, b) {
       var h = Object.assign({ "Content-Type": "application/json" }, o.headers ? o.headers() : {});
-      var r = await fetch("/api/" + path, { method: method, headers: h, body: JSON.stringify(Object.assign({}, b || {}, o.role === "rep" ? { dept: o.dept } : {})) });
+      var r = await fetch("/.netlify/functions/api/" + path, { method: method, headers: h, body: JSON.stringify(Object.assign({}, b || {}, o.role === "rep" ? { dept: o.dept } : {})) });
       var d = await r.json().catch(function () { return {}; });
       if (!r.ok) { var e = new Error(d.error || "Something went wrong."); e.status = r.status; throw e; }
       return d;
