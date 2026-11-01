@@ -261,17 +261,18 @@ export default async (req) => {
     }
     if (method === "POST" && path === "auth/register-student") {
       const name=clean(body.name,120).toUpperCase(), adm=clean(body.adm,60).toUpperCase().replace(/\s+/g,"");
-      const cls=clean(body.cls,40).toUpperCase(), phone=digits(body.phone), pin=String(body.pin||"");
+      const cls=clean(body.cls,40).toUpperCase(), dept=clean(body.dept,80), phone=digits(body.phone), pin=String(body.pin||"");
       if(name.length<3) throw new Bad("Enter your full name.");
-      if(adm.length<4) throw new Bad("Enter your admission number.");
+      if(!/^[A-Z]{3}\d\/\d{2}[A-Z]\/\d{6}$/.test(adm)) throw new Bad("Admission number must follow this format: EPL6/24S/404930");
       if(cls.length<2) throw new Bad("Enter your class.");
+      if(!DEPTS.includes(dept) && dept !== OTHER) throw new Bad("Choose your department.");
       if(phone.replace(/\D/g,"").length<9) throw new Bad("Enter a valid phone number.");
       if(pin.length<4 || pin.length>12 || !/^\d+$/.test(pin)) throw new Bad("Use a 4-12 digit PIN.");
       const all=await getJSON(s,"accounts",{});
       const old=Object.values(all).find(a=>a.role==="student" && a.adm===adm);
       const id=old?old.id:"S"+Date.now().toString(36)+randomBytes(3).toString("hex");
       const salt=randomBytes(16).toString("hex");
-      all[id]={id,role:"student",name,adm,cls,phone,salt,pinHash:pinHash(pin,salt),status:"approved",createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};
+      all[id]={id,role:"student",name,adm,cls,dept,phone,salt,pinHash:pinHash(pin,salt),status:"approved",createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};
       await s.setJSON("accounts",all);
       const reg=await getJSON(s,"register",{});
       const rid=sid(name,adm);
@@ -289,6 +290,10 @@ export default async (req) => {
     }
 
     /* ----- public ----- */
+    if (method === "GET" && path === "me") {
+      const acct = await currentAccount(req,s); if(!acct) return fail("Please sign in again.",401);
+      return json({ id:acct.id, role:acct.role, name:acct.name, adm:acct.adm||"", cls:acct.cls||"", dept:acct.dept||"", phone:acct.phone||"" });
+    }
     if (method === "GET" && path === "courses") {
       const courses = await loadCourses(s);
       return json({ courses, departments: deptList(courses), nita: await getJSON(s, "nitameta", null) });
@@ -299,13 +304,15 @@ export default async (req) => {
       return new Response(Buffer.from(f.data, "base64"), { headers: { "Content-Type": m.type || "application/octet-stream", "Content-Disposition": 'attachment; filename="' + m.name.replace(/[^A-Za-z0-9._ -]/g, "_") + '"', "Cache-Control": "no-store" } });
     }
     if (method === "POST" && path === "placement") {
-      const n = clean(body.name, 120).toUpperCase(), a = clean(body.adm, 60).toUpperCase().replace(/\s+/g, ""),
-        dept = clean(body.dept, 80), course = clean(body.course, 120).toUpperCase(), org = clean(body.org, 120),
+      const acct = await currentAccount(req,s); if(!requireRole(acct,["student"])) return fail("Please sign in as a student.",401);
+      const n = acct.name, a = acct.adm, cls = acct.cls, dept = acct.dept, tel1 = acct.phone,
+        course = clean(body.course, 120).toUpperCase(), org = clean(body.org, 120),
         loc = clean(body.loc, 200), sup = clean(body.sup, 100), town = clean(body.town, 60),
-        tel1 = digits(body.tel1), tel2 = digits(body.tel2);
+        tel2 = digits(body.tel2);
       if (n.length < 3) throw new Bad("Enter your full name.");
-      if (a.length < 6) throw new Bad("Enter your full admission number.");
-      if (!DEPTS.includes(dept) && dept !== OTHER) throw new Bad("Select your department.");
+      if (a.length < 6) throw new Bad("Your account is missing a valid admission number.");
+      if (cls.length < 2) throw new Bad("Your account is missing a class. Please update your student account.");
+      if (!DEPTS.includes(dept) && dept !== OTHER) throw new Bad("Your account is missing a valid department. Please update your student account.");
       if (course.length < 3) throw new Bad("Select your course.");
       if (org.length < 2) throw new Bad("Enter the name of the organization.");
       if (loc.length < 5) throw new Bad("Describe where the organization is, e.g. \"near Naivas, Njoro Road\".");
@@ -315,9 +322,15 @@ export default async (req) => {
       if (tel2 && tel2.replace(/\D/g, "").length < 9) throw new Bad("Phone number 2 must have at least 9 digits, or leave it empty.");
       const all = await getJSON(s, "placements", {}), id = sid(n, a), old = all[id];
       if (!old && Object.keys(all).length >= 20000) throw new Bad("The list is full. Please contact the Industrial Liaison Office.");
-      all[id] = { n, a, dept, course, org, loc, sup, town: town.toUpperCase(), tel1, tel2, t: old ? old.t : Date.now(), u: Date.now(), ...(old && old.tid && { tid: old.tid }) };
+      all[id] = { n, a, cls, dept, course, org, loc, sup, town: town.toUpperCase(), tel1, tel2, t: old ? old.t : Date.now(), u: Date.now(), ...(old && old.tid && { tid: old.tid }) };
       await s.setJSON("placements", all);
       return json({ ok: true, updated: !!old });
+    }
+    if (method === "GET" && path === "placement-me") {
+      const acct = await currentAccount(req,s); if(!requireRole(acct,["student"])) return fail("Please sign in as a student.",401);
+      const all = await getJSON(s,"placements",{}), trainers = await getJSON(s,"trainers",{}), r = all[sid(acct.name,acct.adm)];
+      const t = r && r.tid ? trainers[r.tid] : null;
+      return json({ hasPlacement:!!r, trainer:t?{name:t.name,tel:t.tel}:null });
     }
     if (method === "POST" && path === "placement-search") {
       const q = clean(body.q, 60).toUpperCase(), compact = q.replace(/[^A-Z0-9]/g, "");
@@ -462,9 +475,60 @@ export default async (req) => {
       if (students[id]) return json({ ok: true, already: true });
       const reqs = await getJSON(s, "requests", {});
       if (!reqs[id] && Object.keys(reqs).length >= 5000) return fail("Requests are full right now. Please see the Industrial Liaison Office.");
-      reqs[id] = { n, a, c, course, t: Date.now() };
+      reqs[id] = { n, a, c, course, dept: acct.dept || "", t: Date.now() };
       await s.setJSON("requests", reqs);
       return json({ ok: true });
+    }
+
+    /* ----- ILO representative insurance-request approval ----- */
+    if (method === "GET" && path === "ilo/requests") {
+      const acct = await currentAccount(req, s);
+      if (!requireRole(acct, ["rep"])) return fail("Please sign in as an approved ILO representative.", 401);
+      const reqs = await getJSON(s, "requests", {});
+      const list = Object.entries(reqs)
+        .filter(([, r]) => !r.dept || r.dept === acct.dept)
+        .map(([id, r]) => ({ id, ...r }))
+        .sort((a, b) => (a.t || 0) - (b.t || 0));
+      return json({ requests: list, department: acct.dept || "" });
+    }
+    if (method === "POST" && path === "ilo/requests/approve") {
+      const acct = await currentAccount(req, s);
+      if (!requireRole(acct, ["rep"])) return fail("Please sign in as an approved ILO representative.", 401);
+      const id = clean(body.id, 200);
+      const reqs = await getJSON(s, "requests", {}), r = reqs[id];
+      if (!r) throw new Bad("That insurance request is no longer waiting.");
+      if (r.dept && r.dept !== acct.dept) return fail("You can only approve requests from your department.", 403);
+      const students = await getJSON(s, "students", {});
+      const settings = await getJSON(s, "settings", DEFAULT_SETTINGS);
+      const policies = await getJSON(s, "policies", []), rules = await getJSON(s, "classpol", {});
+      const pid = rules[r.c] && policies.some((x) => x.id === rules[r.c]) ? rules[r.c] : "";
+      students[id] = { n: r.n, a: r.a, c: r.c, ...(pid ? { pid } : {}), approvedBy: acct.name, approvedAt: Date.now() };
+      delete reqs[id];
+      await s.setJSON("students", students);
+      await s.setJSON("requests", reqs);
+      return json({ ok: true, approved: 1, total: Object.keys(students).length, requests: Object.keys(reqs).length, settings });
+    }
+
+    /* ----- student marks (student can view only their own score) ----- */
+    if (method === "GET" && path === "marks-me") {
+      const acct = await currentAccount(req, s);
+      if (!requireRole(acct, ["student"])) return fail("Please sign in as a student.", 401);
+      const marks = await getJSON(s, "marks", {});
+      const reg = await getJSON(s, "register", {}), students = await getJSON(s, "students", {});
+      let recordId = Object.keys(reg).find(id => reg[id] && reg[id].accountId === acct.id);
+      if (!recordId) recordId = Object.keys(reg).find(id => reg[id] && normAdm(reg[id].a) === normAdm(acct.adm));
+      if (!recordId) recordId = Object.keys(students).find(id => students[id] && normAdm(students[id].a) === normAdm(acct.adm));
+      const m = recordId ? marks[recordId] : marks[acct.id];
+      return json({
+        found: !!m,
+        name: acct.name || "",
+        adm: acct.adm || "",
+        cls: acct.cls || "",
+        dept: acct.dept || "",
+        score: m ? Number(m.m) : null,
+        outOf: 100,
+        updatedAt: m ? m.u : null
+      });
     }
 
     /* ----- marks (admin / HOD see everything; an ILO representative sees only their department, with a code) ----- */
@@ -541,6 +605,7 @@ export default async (req) => {
         return fail("Not found", 404);
       }
       if (method === "POST" && path === "marks/upload") {
+        if (!requireRole(acct,["rep"])) return fail("Only an ILO Representative can record or edit attachment marks.",403);
         const rows = Array.isArray(body.rows) ? body.rows.slice(0, 20000) : [];
         /* a representative can only change marks of students in their own department's classes */
         const byAdm = new Map(); let other = 0; const otherList = [];
@@ -556,9 +621,9 @@ export default async (req) => {
           if (!id) { unmatched.push(a); continue; }
           const raw = String(r.m ?? "").trim();
           if (raw === "") { if (r.clear === true && marks[id]) { delete marks[id]; cleared++; } continue; }
-          const o = r.o === "" || r.o == null ? 100 : Number(r.o), m = Number(String(raw).replace("%", ""));
-          if (!(o > 0) || !(m >= 0) || m > o || isNaN(m)) { invalid.push(a); continue; }
-          marks[id] = { m, o, u: Date.now() }; saved++;
+          const m = Number(String(raw).replace("%", ""));
+          if (!(m >= 0) || m > 100 || isNaN(m)) { invalid.push(a); continue; }
+          marks[id] = { m, o: 100, u: Date.now(), by: acct.id }; saved++;
         }
         await s.setJSON("marks", marks);
         return json({ saved, cleared, unmatched: unmatched.slice(0, 50), unmatchedCount: unmatched.length, invalid: invalid.slice(0, 50), invalidCount: invalid.length, otherDept: otherList, otherDeptCount: other, ...build() });

@@ -107,6 +107,8 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <div class="wrap" style="max-width:900px;margin:0 auto;padding:20px 16px 40px">
 <header><h1>Assign trainers</h1>
 <p>Industrial Liaison Office. Add the trainers (supervisors) and give each one their students.</p></header>
+<div class="rolebar"><div class="role-id"><div class="role-icon">H</div><div><strong>HOD / DEPUTY HOD</strong><small>HOD & Deputy Dashboard</small></div></div><div class="role-actions"><a class="current" href="/hod.html">Dashboard</a><a href="#department">Department</a><button type="button" onclick="sessionStorage.removeItem('rvnp_user');location.href='/auth.html'">Sign out</button></div></div>
+<div class="dashboard-subtitle">Manage trainers, placements and department oversight.</div>
 
 <section class="panel" id="gate" style="margin-top:18px">
 <h2>Access</h2>
@@ -208,8 +210,8 @@ $("ab").onclick=async function(){say("m2","");var ids=Object.keys(SEL),tid=$("at
  try{var d=await api("POST","hod/assign",{ids:ids,tid:tid==="__none"?"":tid});D=d;SEL={};setFilters();draw();
   var t=D.trainers.find(function(x){return x.id===tid});say("m2","ok",tid==="__none"?d.assigned+" student(s) now wait for a trainer.":d.assigned+" student"+(d.assigned===1?"":"s")+" assigned to "+t.name+". "+t.name+" now has "+t.count+" student"+(t.count===1?"":"s")+".")}
  catch(e){say("m2","err",e.message)}b.disabled=false};
-function row(p){return [p.n,p.a,p.dept,p.course,p.org,p.loc,p.town,p.sup,p.tel1,p.tel2||""]}
-var HEAD=["Student name","Admission number","Department","Course","Organization","Where (landmark)","Town","Supervisor at organization","Phone 1","Phone 2"];
+function row(p){var t=D.trainers.find(function(x){return x.id===p.tid})||{name:"",tel:""};return [p.n,p.a,p.cls||"",p.dept,p.course,p.org,p.loc,p.town,p.sup,p.tel1,p.tel2||"",t.name,t.tel]}
+var HEAD=["Student name","Admission number","Class","Department","Course","Organization","Where (landmark)","Town","Supervisor at organization","Phone 1","Phone 2","College trainer","Trainer phone"];
 $("xl").onclick=function(){if(!D.placements.length){say("m0","err","Nothing to download yet.");return}
  var by={},none=[];D.placements.forEach(function(p){if(p.tid)(by[p.tid]=by[p.tid]||[]).push(p);else none.push(p)});
  if(!window.XLSX){var l=[["Trainer","Trainer phone"].concat(HEAD).join(",")];D.placements.forEach(function(p){var t=D.trainers.find(function(x){return x.id===p.tid})||{name:"Not assigned",tel:""};l.push([t.name,t.tel].concat(row(p)).map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(","))});

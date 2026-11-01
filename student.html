@@ -104,6 +104,8 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <p id="who" style="font-weight:700;color:var(--ac)"></p>
 <p>Rift Valley National Polytechnic. Access your industrial attachment letter, insurance cover and placement services.</p>
 </header>
+<div class="rolebar"><div class="role-id"><div class="role-icon">S</div><div><strong>STUDENT</strong><small>Student Dashboard</small></div></div><div class="role-actions"><a class="current" href="/student.html">Dashboard</a><a href="/placement.html">Placement</a><button type="button" onclick="sessionStorage.removeItem('rvnp_user');location.href='/auth.html'">Sign out</button></div></div>
+<div class="dashboard-subtitle">Manage placement, insurance, trainer and attachment information.</div>
 
 <div class="tiles" role="tablist" aria-label="Choose a document">
 <button class="tile" id="tl-letter" role="tab" aria-selected="true" aria-controls="p-letter" type="button">
@@ -115,6 +117,9 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <a class="tile" id="plc" href="/placement.html">
 <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
 <span><b>Attachment placement</b><span class="d">Tell us where you were placed and see your trainer.</span></span></a>
+<button class="tile" id="tl-marks" role="tab" aria-selected="false" aria-controls="p-marks" type="button">
+<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-8"/></svg></span>
+<span><b>View marks</b><span class="d">See your attachment score out of 100.</span></span></button>
 <a class="tile" id="nita" href="/api/nita" download hidden>
 <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 20h14"/></svg></span>
 <span><b>NITA form</b><span class="d">Download the NITA attachment form.</span></span></a>
@@ -189,6 +194,18 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 </div></div>
 </section>
 
+
+<section class="panel" id="p-marks" role="tabpanel" aria-labelledby="tl-marks" hidden>
+<h2>Attachment marks</h2>
+<p class="lead">Your ILO Representative records your attachment mark out of 100. This result is automatically linked to your student account.</p>
+<div id="marksCard" style="border:1px solid var(--bd);border-radius:16px;padding:22px;text-align:center;margin-top:16px">
+<div id="marksStatus" class="msg info">Loading your mark…</div>
+<div id="marksScore" style="font-size:64px;font-weight:800;line-height:1;margin:18px 0 6px">—</div>
+<div style="font-size:18px;font-weight:700">OUT OF 100</div>
+<div id="marksMeta" class="hint" style="margin-top:10px"></div>
+</div>
+</section>
+
 <div class="actions" style="justify-content:center"><button class="btn sec" id="signout" type="button">Sign out</button></div>
 <footer>Group personal accident cover. Problems with your details? See the Industrial Liaison Office.</footer>
 </div>
@@ -240,8 +257,16 @@ function busy(b,on,t){b.disabled=on;b.querySelector("span").textContent=on?"Prep
 function log(doc,ins,nm,ad,co,tl,em){try{var d=new URLSearchParams({"form-name":"attachment-log",document:doc,insurance:ins,name:nm,admission:ad,course:co,tel:tl,email:em});fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:d.toString()}).catch(function(){})}catch(x){}}
 
 /* tabs */
-function tab(w){var l=w==="l";$("tl-letter").setAttribute("aria-selected",l);$("tl-ins").setAttribute("aria-selected",!l);$("p-letter").hidden=!l;$("p-ins").hidden=l;if(l)fit()}
-$("tl-letter").onclick=function(){tab("l")};$("tl-ins").onclick=function(){tab("i")};
+function tab(w){var l=w==="l",i=w==="i",m=w==="m";$("tl-letter").setAttribute("aria-selected",l);$("tl-ins").setAttribute("aria-selected",i);$("tl-marks").setAttribute("aria-selected",m);$("p-letter").hidden=!l;$("p-ins").hidden=!i;$("p-marks").hidden=!m;if(l)fit();if(m)loadMarks()}
+$("tl-letter").onclick=function(){tab("l")};$("tl-ins").onclick=function(){tab("i")};$("tl-marks").onclick=function(){tab("m")};
+async function loadMarks(){
+ try{
+  $("marksStatus").className="msg info";$("marksStatus").textContent="Loading your mark…";$("marksScore").textContent="—";
+  var r=await api("marks-me");
+  if(!r.found){$("marksStatus").className="msg info";$("marksStatus").textContent="Your attachment mark has not been entered yet.";$("marksMeta").textContent="Please check again after your ILO Representative records the mark.";return}
+  $("marksStatus").className="msg ok";$("marksStatus").textContent="Mark recorded";$("marksScore").textContent=Number(r.score).toFixed(r.score%1?1:0);$("marksMeta").textContent=(r.name||"")+" • "+(r.adm||"")+" • "+(r.cls||"");
+ }catch(e){$("marksStatus").className="msg err";$("marksStatus").textContent="Could not load your mark. Please refresh and try again.";}
+}
 
 /* ---------- attachment letter ---------- */
 var insured=false,seq=0,LREC=null;
@@ -270,6 +295,7 @@ function check(){
 }
 ["co","pr","ln","la","lt","le"].forEach(function(i){$(i).addEventListener("input",function(){render();if(i==="ln"||i==="la")check()});$(i).addEventListener("change",render)});
 render();
+loadMarks();
 /* paints the letter onto a canvas from the browser's own layout of the preview: every word, line and image lands exactly where the preview shows it */
 function paintLetter(root,S){
  var W=794,H=1123,cv=document.createElement("canvas");cv.width=W*S;cv.height=H*S;

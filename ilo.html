@@ -102,6 +102,8 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <div class="wrap" style="max-width:640px;margin:0 auto;padding:20px 16px 40px">
 <header><h1>ILO representatives</h1>
 <p>Rift Valley National Polytechnic. Send the units your students have covered so far, and the insurance policy each class is covered by. They are used on the attachment letters and insurance covers once the Industrial Liaison Office approves them.</p></header>
+<div class="rolebar"><div class="role-id"><div class="role-icon">I</div><div><strong>ILO REP</strong><small>ILO Representative Dashboard</small></div></div><div class="role-actions"><a class="current" href="/ilo.html">Dashboard</a><a href="#marks">Marks & Approvals</a><button type="button" onclick="sessionStorage.removeItem('rvnp_user');location.href='/auth.html'">Sign out</button></div></div>
+<div class="dashboard-subtitle">Department units, insurance approvals and student marks.</div>
 <section class="panel" style="margin-top:18px">
 <h2>Units covered</h2>
 <p class="lead">Choose your department and course. If the course already has units, they appear below: edit them and send. Put one unit on each line.</p>
@@ -140,8 +142,15 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <div class="actions"><button class="btn" id="go2" type="button">Send insurance details</button></div>
 </section>
 <section class="panel" style="margin-top:18px">
+<h2>Insurance requests from students</h2>
+<p class="lead">Approve insurance requests from students in your department. Approval uses the policy already assigned to their class; if none is assigned, the request is approved and the administrator can finish the policy details.</p>
+<div class="actions"><button class="btn sec" id="irf" type="button">Refresh requests</button></div>
+<div class="msg" id="irm" role="status"></div>
+<div id="irt"><p class="hint">Loading requests...</p></div>
+</section>
+<section class="panel" style="margin-top:18px">
 <h2>Student marks</h2>
-<p class="lead">See and download the marks of the students in your department, class by class. Classes where some students have no marks yet are shown clearly. Ask the Industrial Liaison Office for your department code.</p>
+<p class="lead">See and download the marks of the students in your department, class by class. Classes where some students have no marks yet are shown clearly. Your approved department account is used automatically. Choose a class to view its marks, edit the whole class, or search by student name/admission number.</p>
 <div id="mkgate"><p class="hint">Your approved department account is used automatically.</p><div class="actions"><button class="btn" id="mgo" type="button">Open marks</button></div></div>
 <div id="mkbox"></div>
 </section>
@@ -202,6 +211,18 @@ $("go2").addEventListener("click",async function(){say2("");var b=this,k=$("kc")
   var d=await r.json();if(!r.ok)say2("err",d.error||"Something went wrong.");else{say2("ok","Thank you. The insurance policy for "+cls+" was sent to the Industrial Liaison Office for approval.");$("kc").value="";$("kcw").hidden=true;$("kp").value="";$("knw").hidden=true;$("kph").textContent=""}}
  catch(e){say2("err","Could not send. Check your connection and try again.")}
  b.disabled=false});
+
+/* ---------- student insurance-request approvals ---------- */
+var IR=[];
+function sayIR(c,t){var m=$("irm");m.className="msg"+(c?" "+c:"");m.textContent=t||""}
+function drawIR(){
+ var box=$("irt");
+ if(!IR.length){box.innerHTML='<p class="hint">No waiting insurance requests for your department.</p>';return}
+ box.innerHTML='<div class="scroll"><table style="width:100%"><thead><tr><th>Student</th><th>Admission</th><th>Class</th><th>Course</th><th>Action</th></tr></thead><tbody>'+IR.map(function(r){return '<tr><td>'+esc(r.n)+'</td><td>'+esc(r.a)+'</td><td>'+esc(r.c)+'</td><td>'+esc(r.course)+'</td><td><button class="btn" data-ira="'+esc(r.id)+'" style="min-height:36px;padding:5px 10px">Approve</button></td></tr>'}).join('')+'</tbody></table></div>' ;
+ box.querySelectorAll('[data-ira]').forEach(function(b){b.onclick=async function(){b.disabled=true;try{var r=await fetch('/api/ilo/requests/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.getAttribute('data-ira')})});var d=await r.json();if(!r.ok)throw new Error(d.error||'Could not approve request.');sayIR('ok','Insurance request approved.');loadIR();}catch(e){sayIR('err',e.message);b.disabled=false}}});
+}
+async function loadIR(){try{sayIR('','Loading...');var r=await fetch('/api/ilo/requests');var d=await r.json();if(!r.ok)throw new Error(d.error||'Could not load requests.');IR=d.requests||[];drawIR();if(!IR.length)sayIR('','')}catch(e){sayIR('err',e.message)}}
+$("irf").onclick=loadIR; loadIR();
 
 /* ---------- link for students to fill their details ---------- */
 (function(){var u=location.origin+"/register.html";$("rl").value=u;
