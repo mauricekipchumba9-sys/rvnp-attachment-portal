@@ -93,8 +93,10 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 .panel h2{display:inline-block;border-bottom:3px solid var(--or);padding-bottom:2px}
 .msg.info{background:var(--orb);color:var(--ord)}
 :focus-visible{outline-color:var(--or)!important}
-</style><link rel="manifest" href="/manifest-hod.webmanifest">
-<meta name="theme-color" content="#17803f">
+#gate{display:none!important}
+</style>
+<link rel="stylesheet" href="/portal-theme.css"><link rel="manifest" href="/manifest-hod.webmanifest">
+<meta name="theme-color" content="#12304a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RVNP Attachment">
@@ -114,7 +116,7 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <div class="actions"><button class="btn" id="gb" type="button">Open</button></div>
 </section>
 
-<div id="app" hidden>
+<div id="app" hidden><div class="actions" style="justify-content:flex-end"><button class="btn sec" id="signout" type="button">Sign out</button></div>
 <section class="panel" style="margin-top:18px">
 <h2>Overview</h2>
 <p style="font-size:18px;margin:0"><b id="s1">0</b> students placed &middot; <b id="s2">0</b> assigned &middot; <b id="s3">0</b> waiting for a trainer</p>
@@ -161,16 +163,15 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-var $=function(i){return document.getElementById(i)},CODE=sessionStorage.getItem("hodcode")||"",D=null,SEL={};
+var $=function(i){return document.getElementById(i)},USER_TOKEN=sessionStorage.getItem("rvnp_user"),D=null,SEL={};
+if(!USER_TOKEN){location.replace("/auth.html?role=staff");throw new Error("Staff sign-in required");}
 function say(id,c,t){var m=$(id);m.className="msg"+(c?" "+c:"");m.textContent=t||""}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-async function api(method,path,body){var r=await fetch("/api/"+path,{method:method,headers:{"Content-Type":"application/json","x-hod-code":CODE},body:body?JSON.stringify(body):undefined});
+async function api(method,path,body){var r=await fetch("/api/"+path,{method:method,headers:{"Content-Type":"application/json","Authorization":"Bearer "+USER_TOKEN},body:body?JSON.stringify(body):undefined});
  var d=await r.json().catch(function(){return{}});if(!r.ok){var e=new Error(d.error||"Something went wrong.");e.status=r.status;throw e}return d}
-async function open_(){try{D=await api("GET","hod/data");sessionStorage.setItem("hodcode",CODE);$("gate").hidden=true;$("app").hidden=false;SEL={};setFilters(true);draw();if(!window.MKP)window.MKP=RVMarks.mount($("mkbox"),{role:"hod",headers:function(){return{"x-hod-code":CODE}}})}
- catch(e){if(e.status===401){CODE="";sessionStorage.removeItem("hodcode");$("gate").hidden=false;$("app").hidden=true;say("gm","err",e.message)}else say("gm","err",e.message)}}
-$("gb").onclick=function(){CODE=$("code").value.trim();if(!CODE){say("gm","err","Enter the access code.");return}say("gm","");open_()};
-$("code").addEventListener("keydown",function(e){if(e.key==="Enter")$("gb").click()});
-if(CODE)open_();
+async function open_(){try{D=await api("GET","hod/data");$("gate").hidden=true;$("app").hidden=false;SEL={};setFilters(true);draw();if(!window.MKP)window.MKP=RVMarks.mount($("mkbox"),{role:"hod",headers:function(){return{"Authorization":"Bearer "+USER_TOKEN}},onAuthFail:function(){location.replace("/auth.html?role=staff")}})}
+ catch(e){if(e.status===401){sessionStorage.removeItem("rvnp_user");sessionStorage.removeItem("rvnp_user_role");location.replace("/auth.html?role=staff")}else say("gm","err",e.message)}}
+open_();
 function tname(id){var t=D.trainers.find(function(x){return x.id===id});return t?t.name:""}
 function setFilters(first){var keep={d:$("fd").value,t:$("ft").value,r:$("fr").value};
  var ds=[],ts=[];D.placements.forEach(function(p){if(ds.indexOf(p.dept)<0)ds.push(p.dept);if(ts.indexOf(p.town)<0)ts.push(p.town)});ds.sort();ts.sort();
@@ -221,4 +222,5 @@ $("xl").onclick=function(){if(!D.placements.length){say("m0","err","Nothing to d
  D.trainers.forEach(function(t){add(t.name,[HEAD].concat((by[t.id]||[]).map(row)),wid)});
  if(none.length)add("Waiting",[HEAD].concat(none.map(row)),wid);
  XLSX.writeFile(wb,"RVNP_students_by_trainer.xlsx")};
+$("signout").onclick=function(){sessionStorage.removeItem("rvnp_user");sessionStorage.removeItem("rvnp_user_role");location.href="/auth.html?role=staff"};
 </script><script src="/marks.js"></script><script src="/pwa.js" defer></script></body></html>

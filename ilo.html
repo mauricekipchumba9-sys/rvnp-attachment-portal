@@ -89,8 +89,9 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 .panel h2{display:inline-block;border-bottom:3px solid var(--or);padding-bottom:2px}
 .msg.info{background:var(--orb);color:var(--ord)}
 :focus-visible{outline-color:var(--or)!important}
-</style><link rel="manifest" href="/manifest-ilo.webmanifest">
-<meta name="theme-color" content="#17803f">
+</style>
+<link rel="stylesheet" href="/portal-theme.css"><link rel="manifest" href="/manifest-ilo.webmanifest">
+<meta name="theme-color" content="#12304a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RVNP Attachment">
@@ -141,21 +142,15 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <section class="panel" style="margin-top:18px">
 <h2>Student marks</h2>
 <p class="lead">See and download the marks of the students in your department, class by class. Classes where some students have no marks yet are shown clearly. Ask the Industrial Liaison Office for your department code.</p>
-<div id="mkgate"><div class="grid"><div><label for="md">Department</label><select id="md"><option value="">Select your department</option></select></div>
-<div><label for="mcode">Department code</label><input id="mcode" type="password" autocomplete="off"></div></div>
-<div class="actions"><button class="btn" id="mgo" type="button">Open marks</button></div></div>
+<div id="mkgate"><p class="hint">Your approved department account is used automatically.</p><div class="actions"><button class="btn" id="mgo" type="button">Open marks</button></div></div>
 <div id="mkbox"></div>
 </section>
-<section class="panel" style="margin-top:18px">
-<h2>Collect student details</h2>
-<p class="lead">Send this link to your students. They fill in their name, admission number, class and contact number once, and the Industrial Liaison Office keeps the records, sorted by class.</p>
-<input id="rl" readonly onclick="this.select()">
-<div class="actions"><button class="btn" id="rcp" type="button">Copy link</button><a class="btn sec" id="rwa" target="_blank" rel="noopener">Share on WhatsApp</a></div>
-<div class="msg" id="m3" role="status"></div>
-</section>
-<footer>Your submission goes to the Industrial Liaison Office for approval. It does not change student letters until approved.</footer>
+<div class="actions" style="justify-content:center"><button class="btn sec" id="signout" type="button">Sign out</button></div><footer>Your submission goes to the Industrial Liaison Office for approval. It does not change student letters until approved.</footer>
 </div>
 <script>
+var USER_TOKEN=sessionStorage.getItem("rvnp_user");
+if(!USER_TOKEN){location.replace("/auth.html?role=staff");throw new Error("Staff sign-in required");}
+var _fetch=window.fetch;window.fetch=function(url,opt){opt=opt||{};if(String(url).indexOf("/api/")===0){opt.headers=Object.assign({"Authorization":"Bearer "+USER_TOKEN},opt.headers||{})}return _fetch(url,opt)};
 var $=function(i){return document.getElementById(i)},ALL=[];
 function say(c,t){var m=$("m");m.className="msg"+(c?" "+c:"");m.textContent=t||""}
 fetch("/api/courses").then(function(r){return r.json()}).then(function(d){ALL=d.courses||[];
@@ -217,8 +212,10 @@ $("go2").addEventListener("click",async function(){say2("");var b=this,k=$("kc")
 /* ---------- student marks (department code) ---------- */
 (function(){fetch("/api/courses").then(function(r){return r.json()}).then(function(d){(d.departments||[]).forEach(function(n){var o=document.createElement("option");o.value=n;o.textContent=n;$("md").appendChild(o)})}).catch(function(){});
  var mk=null;
- $("mgo").onclick=function(){var dp=$("md").value,cd=$("mcode").value;if(!dp||!cd){alert("Choose your department and type its code.");return}
+ $("mgo").onclick=function(){
   $("mkgate").hidden=true;
-  mk=RVMarks.mount($("mkbox"),{role:"rep",dept:dp,headers:function(){return{"x-ilo-code":cd}},onAuthFail:function(){$("mkgate").hidden=false}})}})();
+  mk=RVMarks.mount($("mkbox"),{role:"rep",headers:function(){return{"Authorization":"Bearer "+USER_TOKEN}},onAuthFail:function(){location.replace("/auth.html?role=staff")}})
+ }})();
+$("signout").onclick=function(){sessionStorage.removeItem("rvnp_user");sessionStorage.removeItem("rvnp_user_role");location.href="/auth.html?role=staff"};
 </script><script src="/marks.js"></script><script src="/pwa.js" defer></script>
 </body></html>

@@ -3,11 +3,16 @@
 Students download their attachment letter and personal accident insurance cover.
 The admin manages courses, insurance policy details, student lists and cover requests.
 
-## Files (all 25 must be at the top level, not inside a sub-folder)
+The portal includes a unified responsive visual theme using RVNP navy, green and gold styling. Staff accounts (HOD, Deputy HOD and departmental ILO representatives) must register with full name, ID, phone and PF number; representatives also choose their department. The administrator approves staff accounts before they can log in. Students register their name, admission number, class, phone and a private PIN; their details are stored in the student database. The theme is provided by `portal-theme.css`, which must be deployed alongside the HTML pages.
+
+## Files (keep all project files at the top level, not inside a sub-folder)
 
 | File | Purpose |
 |---|---|
-| index.html | Student page (attachment letter and insurance cover) |
+| index.html | Main access gateway; each role now goes through its secure sign-in/registration flow |
+| auth.html | Secure staff/student registration and PIN login |
+| student.html | Student page (attachment letter and insurance cover) |
+| portal-theme.css | Shared responsive design theme used by all portal pages |
 | admin.html | Admin page (open at `your-site/admin.html`) |
 | register.html | Page where students fill in their name, admission number, class and contact number (`your-site/register.html`) |
 | placement.html | Students tell the college where they were placed and see their trainer (`your-site/placement.html`) |
@@ -22,11 +27,11 @@ The admin manages courses, insurance policy details, student lists and cover req
 
 ## Put the files on GitHub (do this first)
 
-1. Unzip MKLETTERS_Portal_Flat.zip. Open the folder and check the 10 files are directly inside.
+1. Unzip the portal ZIP. Open the folder and check that all project files (including `portal-theme.css`) are directly inside, not nested in another folder.
 2. Sign in at github.com (free account).
 3. Tap **+**, then **New repository**. Use any name (for example `rvnp-attachment-portal`), choose **Private**, then **Create repository**.
 4. Tap **uploading an existing file**, then **choose your files**. Select all 10 files (not the folder, not the zip). On a phone, turn on **Desktop site** in your browser first. Upload in batches if needed.
-5. Check that all 10 files are listed, then tap **Commit changes**.
+5. Check that all project files are listed, then tap **Commit changes**.
 
 To update later: open the repository, **Add file**, then **Upload files**. Files with the same name replace the old ones.
 
@@ -118,10 +123,20 @@ The student's cover (and the policy number and insurer in their attachment lette
 ## Student database (details filled in by students)
 
 1. Share the **student details link** (`your-site/register.html`). You can copy it from the admin page (**Student database** tab) or from the ILO page, so ILO representatives can send it to their classes too.
-2. Students enter their full name, admission number, class and contact number. If they submit again with the same name and admission number, their details are updated, not duplicated.
+2. Students enter their full name, admission number, class, contact number and a private PIN. The PIN is stored as a secure password hash, not as plain text. If they submit again with the same name and admission number, their details are updated, not duplicated.
 3. In the admin page, **Student database** tab, you see the **total number of students**, the number per class, and how many already have an insurance cover. Tap a class to list its students, or search by name, admission number, class or phone (the list stays hidden until you do).
 4. **Download Excel (by class)** gives one file with a Summary sheet (students per class and the total), an "All students" sheet sorted by class, and a separate sheet for each class. **Download CSV** gives the same list as one sorted file.
 5. Remove a student with the Remove button next to their name.
+
+## Accounts and access flow
+
+1. The main `/` page no longer gives direct access to ILO or student tools.
+2. **Admin** still uses the existing `ADMIN_PASSWORD` login.
+3. **Staff / ILO** opens `auth.html?role=staff`. HOD, Deputy HOD and ILO representatives register there. A representative must select a department. Their account remains **Pending** until the administrator approves it in **Admin → Accounts**.
+4. **Students** open `auth.html?role=student` (the old `register.html` address redirects there). They register their full name, admission number, class, phone and a 4–12 digit PIN. The details are stored in the database and the student can then sign in with admission number + PIN.
+5. Direct visits to `ilo.html`, `hod.html` and `student.html` are protected and redirect unauthenticated users to the appropriate sign-in page.
+6. ILO representative and HOD/deputy API actions now require an approved account token; old department/HOD access codes are no longer needed for those pages.
+7. The admin **Accounts** tab shows pending/active/rejected accounts and provides Approve/Reject controls.
 
 ## Installing the portal as an app
 
@@ -190,3 +205,7 @@ Green and white theme with orange accents (title underline, counters, selected t
 2. Enter or upload the marks as usual.
 3. Press **Transfer marks** next to the marksheet. Your sheet downloads with the marks filled in. Students stay in your order, and your layout, colours and merged cells are kept. Matching is by admission number.
 4. A report shows how many marks were transferred, which students in your sheet have no marks yet, which admission numbers were not found, and which students with marks are not on your sheet. If the system cannot find your Marks column, type its letter (for example F) in the box before pressing Transfer. Cells that contain formulas are left alone.
+
+
+### Visual colour update
+The portal uses a balanced green, orange and white palette: green remains the institutional identity and primary action colour; orange is used for highlights, selected navigation, secondary actions and status accents; white and soft neutral backgrounds keep pages clean and readable. Official print templates remain unchanged.
