@@ -229,7 +229,7 @@ const fail = (msg, status = 400) => json({ error: msg }, status);
 export default async (req) => {
   try {
     const url = new URL(req.url);
-    const path = url.pathname.replace(/^\/api\/?/, "").replace(/\/$/, "");
+    const path = url.pathname.replace(/^\/api\/?/, "").replace(/^\/\.netlify\/functions\/api\/?/, "").replace(/\/$/, "");
     const method = req.method;
     const s = await store();
     const body = ["POST", "PUT"].includes(method) ? await req.json().catch(() => ({})) : {};

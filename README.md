@@ -209,3 +209,6 @@ Green and white theme with orange accents (title underline, counters, selected t
 
 ### Visual colour update
 The portal uses a balanced green, orange and white palette: green remains the institutional identity and primary action colour; orange is used for highlights, selected navigation, secondary actions and status accents; white and soft neutral backgrounds keep pages clean and readable. Official print templates remain unchanged.
+
+## GitHub / Netlify upload
+All source files are kept at the repository root so they can be uploaded through GitHub's web uploader without selecting a `netlify` folder. Netlify creates the `site/` publish directory and `netlify/functions/api.mjs` during the build from `build.mjs`.
