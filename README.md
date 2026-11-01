@@ -3,11 +3,15 @@
 Students download their attachment letter and personal accident insurance cover.
 The admin manages courses, insurance policy details, student lists and cover requests.
 
-## Files (all 25 must be at the top level, not inside a sub-folder)
+The portal includes a unified responsive visual theme using RVNP navy, green and gold styling. The theme is provided by `portal-theme.css`, which must be deployed alongside the HTML pages.
+
+## Files (keep all project files at the top level, not inside a sub-folder)
 
 | File | Purpose |
 |---|---|
-| index.html | Student page (attachment letter and insurance cover) |
+| index.html | Main access gateway with ADMIN, ILO and STUDENT choices |
+| student.html | Student page (attachment letter and insurance cover) |
+| portal-theme.css | Shared responsive design theme used by all portal pages |
 | admin.html | Admin page (open at `your-site/admin.html`) |
 | register.html | Page where students fill in their name, admission number, class and contact number (`your-site/register.html`) |
 | placement.html | Students tell the college where they were placed and see their trainer (`your-site/placement.html`) |
@@ -22,11 +26,11 @@ The admin manages courses, insurance policy details, student lists and cover req
 
 ## Put the files on GitHub (do this first)
 
-1. Unzip MKLETTERS_Portal_Flat.zip. Open the folder and check the 10 files are directly inside.
+1. Unzip the portal ZIP. Open the folder and check that all project files (including `portal-theme.css`) are directly inside, not nested in another folder.
 2. Sign in at github.com (free account).
 3. Tap **+**, then **New repository**. Use any name (for example `rvnp-attachment-portal`), choose **Private**, then **Create repository**.
 4. Tap **uploading an existing file**, then **choose your files**. Select all 10 files (not the folder, not the zip). On a phone, turn on **Desktop site** in your browser first. Upload in batches if needed.
-5. Check that all 10 files are listed, then tap **Commit changes**.
+5. Check that all project files are listed, then tap **Commit changes**.
 
 To update later: open the repository, **Add file**, then **Upload files**. Files with the same name replace the old ones.
 
@@ -190,3 +194,7 @@ Green and white theme with orange accents (title underline, counters, selected t
 2. Enter or upload the marks as usual.
 3. Press **Transfer marks** next to the marksheet. Your sheet downloads with the marks filled in. Students stay in your order, and your layout, colours and merged cells are kept. Matching is by admission number.
 4. A report shows how many marks were transferred, which students in your sheet have no marks yet, which admission numbers were not found, and which students with marks are not on your sheet. If the system cannot find your Marks column, type its letter (for example F) in the box before pressing Transfer. Cells that contain formulas are left alone.
+
+
+### Visual colour update
+The portal uses a balanced green, orange and white palette: green remains the institutional identity and primary action colour; orange is used for highlights, selected navigation, secondary actions and status accents; white and soft neutral backgrounds keep pages clean and readable. Official print templates remain unchanged.
