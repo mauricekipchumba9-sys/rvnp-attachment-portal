@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Student details - RVNP</title>
 <style>
-:root{--bg:#eef2f6;--card:#fff;--ink:#12304f;--mut:#566b80;--ac:#1d5fa6;--acd:#154a85;--soft:#e4eefa;--bd:#c7d3e0;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1722;--card:#16222f;--ink:#e6eef7;--mut:#9db0c3;--ac:#6fb0f5;--acd:#8cc2fa;--soft:#1c3250;--bd:#2f4358;--in:#101b27;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#0b1420}}
+:root{--bg:#f3f8f4;--card:#fff;--ink:#12301f;--mut:#51675a;--ac:#17803f;--acd:#0f6330;--soft:#e3f3e8;--bd:#cfe0d4;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff;--or:#f28a1d;--orb:#fff1e0;--ord:#c2610a}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1a12;--card:#14261b;--ink:#e6f4ea;--mut:#9fb8a7;--ac:#4cc77a;--acd:#6fd99a;--soft:#1a3524;--bd:#2c4a38;--in:#0f1f16;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#08140d;--or:#ffa94d;--orb:#3a2610;--ord:#ffbf73}}
 @font-face{font-family:"CoverFont";src:url(cover_font.ttf) format("truetype")}
 *,*:before,*:after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -67,17 +67,37 @@ footer{margin-top:22px;color:var(--mut);font-size:13px}
 #L .sg div{position:relative}
 
 textarea{width:100%;min-height:170px;padding:10px 12px;border:1px solid var(--bd);border-radius:9px;background:var(--in);color:var(--ink);font:inherit;resize:vertical}
-
-/* responsive: phone, tablet, laptop, and either orientation */
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);overflow-wrap:break-word}
-img,svg,canvas{max-width:100%}
-input,select,textarea,button{max-width:100%}
-.scroll,.mkg{overflow-x:auto;-webkit-overflow-scrolling:touch}
-@media (min-width:760px){.wrap{padding-left:28px;padding-right:28px}}
-@media (min-width:1100px){.wrap{max-width:1040px}}
-@media (orientation:landscape) and (max-height:520px){.wrap{padding-top:12px;padding-bottom:24px}h1{font-size:22px!important}header{margin-bottom:12px}}
-</style></head><body>
+/*GREEN*/
+body{background:var(--bg) linear-gradient(180deg,var(--soft),transparent 260px) no-repeat}
+header{padding-bottom:14px;border-bottom:4px solid var(--or);position:relative}
+h1{color:var(--ac)}
+.panel,.card2,.tile{box-shadow:0 2px 10px rgba(23,128,63,.08)}
+.panel{border-top:4px solid var(--ac)}
+.tile:hover{box-shadow:0 4px 16px rgba(23,128,63,.18)}
+.btn{background:linear-gradient(135deg,var(--ac),var(--acd));box-shadow:0 2px 8px rgba(23,128,63,.28)}
+.btn.sec{background:var(--soft);box-shadow:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(23,128,63,.2)}
+/*ORANGE*/
+header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px;background:var(--or);margin-top:8px}
+.badge{background:var(--or)!important;color:#fff!important}
+.tab[aria-selected="true"]{border-color:var(--or)!important;background:var(--orb)!important;color:var(--ord)}
+.tile[aria-selected="true"] .ic{background:var(--or)!important}
+.tile:hover{border-color:var(--or)!important}
+.tile .ic{background:var(--orb)!important;color:var(--ord)!important}
+.btn:hover{background:var(--or)!important;box-shadow:0 3px 10px rgba(242,138,29,.4)}
+.btn.sec:hover{background:var(--orb)!important;border-color:var(--or)}
+.panel h2{display:inline-block;border-bottom:3px solid var(--or);padding-bottom:2px}
+.msg.info{background:var(--orb);color:var(--ord)}
+:focus-visible{outline-color:var(--or)!important}
+</style><link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17803f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RVNP Attachment">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/icon-192.png">
+</head><body>
 <div class="wrap" style="max-width:640px;margin:0 auto;padding:20px 16px 40px">
 <header><h1>Student details</h1>
 <p>Rift Valley National Polytechnic, Industrial Liaison Office. Fill in your details once so the college has your correct records.</p></header>
@@ -110,4 +130,5 @@ $("go").addEventListener("click",async function(){say("");var b=this;
   else{say("ok",d.updated?"Your details were updated. Thank you.":"Thank you. Your details were saved.");$("n").value=$("a").value=$("c").value=$("t").value=""}}
  catch(e){say("err","Could not send. Check your connection and try again.")}
  b.disabled=false});
-</script></body></html>
+</script><script src="/pwa.js" defer></script>
+</body></html>

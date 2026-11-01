@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RVNP Industrial Attachment Portal</title>
 <style>
-:root{--bg:#eef2f6;--card:#fff;--ink:#12304f;--mut:#566b80;--ac:#1d5fa6;--acd:#154a85;--soft:#e4eefa;--bd:#c7d3e0;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1722;--card:#16222f;--ink:#e6eef7;--mut:#9db0c3;--ac:#6fb0f5;--acd:#8cc2fa;--soft:#1c3250;--bd:#2f4358;--in:#101b27;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#0b1420}}
+:root{--bg:#f3f8f4;--card:#fff;--ink:#12301f;--mut:#51675a;--ac:#17803f;--acd:#0f6330;--soft:#e3f3e8;--bd:#cfe0d4;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff;--or:#f28a1d;--orb:#fff1e0;--ord:#c2610a}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1a12;--card:#14261b;--ink:#e6f4ea;--mut:#9fb8a7;--ac:#4cc77a;--acd:#6fd99a;--soft:#1a3524;--bd:#2c4a38;--in:#0f1f16;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#08140d;--or:#ffa94d;--orb:#3a2610;--ord:#ffbf73}}
 @font-face{font-family:"CoverFont";src:url(cover_font.ttf) format("truetype")}
 *,*:before,*:after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -56,18 +56,6 @@ select{appearance:auto}
 .btn.sec{background:var(--soft);color:var(--ink);border:1px solid var(--bd)}
 .pvh{margin:22px 0 8px;font-weight:600;font-size:14px;color:var(--mut)}
 .pv{overflow:hidden;border:1px solid var(--bd);border-radius:10px;background:#97BFEB}
-.nb{display:inline-block;background:var(--er);color:#fff;border-radius:99px;padding:0 8px;margin-left:6px;font-size:12px;font-weight:700;line-height:20px;vertical-align:middle}
-table.mk{width:100%;border-collapse:collapse;font-size:15px;margin:6px 0 4px}
-table.mk th,table.mk td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
-table.mk th{font-size:13px;color:var(--mut);font-weight:600}
-table.mk td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-.mkg{margin-top:18px}.mkg h3{font-size:16px;margin:0 0 2px}.mkg .avg{font-size:13px;color:var(--mut)}
-.nt{border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:var(--card)}
-.nt.imp{border-color:var(--er);background:var(--erb)}
-.nt.new{box-shadow:0 0 0 2px var(--ac)}
-.nt h3{margin:0 0 4px;font-size:17px}.nt .by{font-size:13px;color:var(--mut);margin-bottom:8px}.nt p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-.tg{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--ac);color:var(--on);margin-left:6px;vertical-align:middle}.tg.r{background:var(--er);color:#fff}
-.who{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
 footer{margin-top:22px;color:var(--mut);font-size:13px}
 /* letter (A4 at 794x1123) */
 #L{width:794px;height:1123px;background:#97BFEB;color:#000;font:14.67px/1.42 Arial,Helvetica,sans-serif;position:relative;transform-origin:top left;padding:20px 76px 0}
@@ -78,18 +66,37 @@ footer{margin-top:22px;color:var(--mut);font-size:13px}
 #L .fd{flex:1;border-bottom:1.5px dotted #000;min-height:20px;padding:0 4px;font-weight:400}
 #L .sg{position:relative;margin-top:6px;height:92px}#L .sg img{position:absolute;left:92px;top:-2px;width:205px}
 #L .sg div{position:relative}
-
-/* responsive: phone, tablet, laptop, and either orientation */
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);overflow-wrap:break-word}
-img,svg,canvas{max-width:100%}
-input,select,textarea,button{max-width:100%}
-.scroll,.mkg{overflow-x:auto;-webkit-overflow-scrolling:touch}
-@media (min-width:760px){.wrap{padding-left:28px;padding-right:28px}}
-@media (min-width:1100px){.wrap{max-width:1040px}}
-@media (orientation:landscape) and (max-height:520px){.wrap{padding-top:12px;padding-bottom:24px}h1{font-size:22px!important}header{margin-bottom:12px}}
-@media (min-width:760px){.tiles{grid-template-columns:repeat(3,1fr)}}
-</style></head><body>
+/*GREEN*/
+body{background:var(--bg) linear-gradient(180deg,var(--soft),transparent 260px) no-repeat}
+header{padding-bottom:14px;border-bottom:4px solid var(--or);position:relative}
+h1{color:var(--ac)}
+.panel,.card2,.tile{box-shadow:0 2px 10px rgba(23,128,63,.08)}
+.panel{border-top:4px solid var(--ac)}
+.tile:hover{box-shadow:0 4px 16px rgba(23,128,63,.18)}
+.btn{background:linear-gradient(135deg,var(--ac),var(--acd));box-shadow:0 2px 8px rgba(23,128,63,.28)}
+.btn.sec{background:var(--soft);box-shadow:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(23,128,63,.2)}
+/*ORANGE*/
+header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px;background:var(--or);margin-top:8px}
+.badge{background:var(--or)!important;color:#fff!important}
+.tab[aria-selected="true"]{border-color:var(--or)!important;background:var(--orb)!important;color:var(--ord)}
+.tile[aria-selected="true"] .ic{background:var(--or)!important}
+.tile:hover{border-color:var(--or)!important}
+.tile .ic{background:var(--orb)!important;color:var(--ord)!important}
+.btn:hover{background:var(--or)!important;box-shadow:0 3px 10px rgba(242,138,29,.4)}
+.btn.sec:hover{background:var(--orb)!important;border-color:var(--or)}
+.panel h2{display:inline-block;border-bottom:3px solid var(--or);padding-bottom:2px}
+.msg.info{background:var(--orb);color:var(--ord)}
+:focus-visible{outline-color:var(--or)!important}
+</style><link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17803f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RVNP Attachment">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/icon-192.png">
+</head><body>
 <div class="wrap">
 <header>
 <h1>Industrial Attachment Portal</h1>
@@ -103,15 +110,9 @@ input,select,textarea,button{max-width:100%}
 <button class="tile" id="tl-ins" role="tab" aria-selected="false" aria-controls="p-ins" type="button">
 <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
 <span><b>Insurance cover</b><span class="d">Download your personal accident cover.</span></span></button>
-<button class="tile" id="tl-pl" role="tab" aria-selected="false" aria-controls="p-pl" type="button">
-<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.2-6-10a6 6 0 0 1 12 0c0 4.8-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg></span>
-<span><b>Placement</b><span class="d">Tell us where you were attached and see your trainer.</span></span></button>
-<button class="tile" id="tl-mk" role="tab" aria-selected="false" aria-controls="p-mk" type="button">
-<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
-<span><b>My marks</b><span class="d">Private. Sign in with your PIN to see only your own marks.</span></span></button>
-<button class="tile" id="tl-nt" role="tab" aria-selected="false" aria-controls="p-nt" type="button">
-<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></span>
-<span><b>Notices <span class="nb" id="ntb" hidden>0</span></b><span class="d">Official messages from the Industrial Liaison Office.</span></span></button>
+<a class="tile" id="plc" href="/placement.html">
+<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+<span><b>Attachment placement</b><span class="d">Tell us where you were placed and see your trainer.</span></span></a>
 <a class="tile" id="nita" href="/api/nita" download hidden>
 <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 20h14"/></svg></span>
 <span><b>NITA form</b><span class="d">Download the NITA attachment form.</span></span></a>
@@ -186,68 +187,6 @@ input,select,textarea,button{max-width:100%}
 </div></div>
 </section>
 
-<section class="panel" id="p-pl" role="tabpanel" aria-labelledby="tl-pl" hidden>
-<h2>Placement</h2>
-<p class="lead">Once you have secured a place for your attachment, fill in the details below. After the Industrial Liaison Office assigns you a trainer (supervisor), come back here, enter your name and admission number, and press <b>Check my trainer</b>.</p>
-<div class="grid">
-<div class="full"><label for="xn">Full name</label><input id="xn" autocomplete="name" placeholder="e.g. KABIRU ELIUD GATHUTHI"></div>
-<div class="full"><label for="xa">Admission number</label><input id="xa" autocomplete="off" placeholder="e.g. EIL4/26J/306761"></div>
-<div class="full"><label for="xdp">Department</label><select id="xdp"><option value="">Select your department</option></select></div>
-<div class="full"><label for="xco">Course</label><select id="xco" disabled><option value="">Select your department first</option></select></div>
-<div class="full" id="xcw" hidden><label for="xcn">Course name and level</label><input id="xcn" placeholder="e.g. DRONE TECHNOLOGY LEVEL 5"></div>
-<div><label for="xp1">Phone number 1</label><input id="xp1" type="tel" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX"></div>
-<div><label for="xp2">Phone number 2 (optional)</label><input id="xp2" type="tel" inputmode="tel" autocomplete="off" placeholder="07XX XXX XXX"></div>
-<div class="full"><label for="xorg">Name of organization</label><input id="xorg" autocomplete="off" placeholder="e.g. KENYA POWER AND LIGHTING"></div>
-<div class="full"><label for="xdesc">Where is the organization?</label><input id="xdesc" autocomplete="off" placeholder="e.g. near Nakuru Level 5 Hospital, opposite Total petrol station">
-<div class="hint">Describe the location clearly so your trainer can find it.</div></div>
-<div class="full"><label for="xsup">Your supervisor at the organization</label><input id="xsup" autocomplete="off" placeholder="e.g. ENG. JOHN MWANGI"></div>
-<div class="full"><label for="xtown">Town</label><input id="xtown" autocomplete="off" placeholder="e.g. NAKURU"></div>
-</div>
-<div class="msg" id="xm" role="status"></div>
-<div class="actions">
-<button class="btn" id="xsave" type="button"><span>Submit placement details</span></button>
-<button class="btn sec" id="xchk" type="button"><span>Check my trainer</span></button>
-</div>
-<div class="hint" style="margin-top:10px">Submitting again with the same name and admission number updates your details. If you change the organization or town, your trainer will be assigned again.</div>
-</section>
-
-<section class="panel" id="p-mk" role="tabpanel" aria-labelledby="tl-mk" hidden>
-<h2>My marks</h2>
-<div id="mk-in">
-<p class="lead">Your marks are private. You can only see your own, after signing in with your PIN. Nobody can search for or open another student's marks.</p>
-<div class="grid">
-<div class="full"><label for="mn">Full name</label><input id="mn" autocomplete="name" placeholder="e.g. KABIRU ELIUD GATHUTHI"></div>
-<div class="full"><label for="ma">Admission number</label><input id="ma" autocomplete="off" placeholder="e.g. EIL4/26J/306761"></div>
-<div class="full" id="mpw"><label for="mp">Your PIN</label><input id="mp" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="5 to 8 digits"></div>
-</div>
-<div id="mset" hidden>
-<div class="reqbox">
-<p class="hint" style="margin:0 0 10px">Create your PIN once. To prove it is you, enter the phone number you gave on the student details form (the same one the Industrial Liaison Office has). Keep your PIN to yourself.</p>
-<div class="grid">
-<div class="full"><label for="mt">Your phone number</label><input id="mt" type="tel" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX"></div>
-<div><label for="mp1">Choose a PIN</label><input id="mp1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="5 to 8 digits"></div>
-<div><label for="mp2">Repeat the PIN</label><input id="mp2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8"></div>
-</div></div></div>
-<div class="msg" id="mm" role="status"></div>
-<div class="actions">
-<button class="btn" id="mgo" type="button"><span>View my marks</span></button>
-<button class="btn sec" id="mnew" type="button"><span>First time? Create my PIN</span></button>
-</div>
-<div class="hint" style="margin-top:10px">Forgot your PIN? Ask the Industrial Liaison Office to reset it. Five wrong PINs lock sign-in for 15 minutes.</div>
-</div>
-<div id="mk-out" hidden>
-<div class="who"><div><b id="mwn"></b><div class="hint" id="mwa"></div></div><button class="btn sec" id="mhide" type="button"><span>Hide my marks</span></button></div>
-<div id="mlist"></div>
-<div class="hint" style="margin-top:12px">Your marks are hidden automatically when you leave this tab. Marks are entered by your ILO representative. If something looks wrong, tell them.</div>
-</div>
-</section>
-
-<section class="panel" id="p-nt" role="tabpanel" aria-labelledby="tl-nt" hidden>
-<h2>Notices</h2>
-<p class="lead">Official messages from the Industrial Liaison Office and the ILO HOD / Deputy HOD.</p>
-<div id="ntl"></div>
-</section>
-
 <footer>Group personal accident cover. Problems with your details? See the Industrial Liaison Office.</footer>
 </div>
 
@@ -271,7 +210,7 @@ function note(){var n=document.getElementById("cn"),t=C[document.getElementById(
  ALLC.forEach(function(c){C[c.key]=[c.title,c.percent,c.units]});
  if(d.nita)document.getElementById("nita").hidden=false;
  dsel.addEventListener("change",fillCourses);document.getElementById("co").addEventListener("change",note);
- initPl(d.departments||[]);render()}).catch(function(){var m=document.getElementById("lm");m.className="msg err";m.textContent="Could not load the course list. Check your connection and refresh the page."})})();
+ render()}).catch(function(){var m=document.getElementById("lm");m.className="msg err";m.textContent="Could not load the course list. Check your connection and refresh the page."})})();
 var $=function(i){return document.getElementById(i)},te=new TextEncoder();
 function list(a){return a.length<2?a.join("")+".":a.length===2?a[0]+" and "+a[1]+".":a.slice(0,-1).join(", ")+", and "+a[a.length-1]+"."}
 function cleanName(n){return n.toUpperCase().split(/\s+/).filter(Boolean).join(" ")}
@@ -295,8 +234,8 @@ function busy(b,on,t){b.disabled=on;b.querySelector("span").textContent=on?"Prep
 function log(doc,ins,nm,ad,co,tl,em){try{var d=new URLSearchParams({"form-name":"attachment-log",document:doc,insurance:ins,name:nm,admission:ad,course:co,tel:tl,email:em});fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:d.toString()}).catch(function(){})}catch(x){}}
 
 /* tabs */
-function tab(w){var ids={l:["tl-letter","p-letter"],i:["tl-ins","p-ins"],p:["tl-pl","p-pl"]};Object.keys(ids).forEach(function(k){$(ids[k][0]).setAttribute("aria-selected",k===w);$(ids[k][1]).hidden=k!==w});if(w==="l")fit()}
-$("tl-letter").onclick=function(){tab("l")};$("tl-ins").onclick=function(){tab("i")};$("tl-pl").onclick=function(){tab("p")};
+function tab(w){var l=w==="l";$("tl-letter").setAttribute("aria-selected",l);$("tl-ins").setAttribute("aria-selected",!l);$("p-letter").hidden=!l;$("p-ins").hidden=l;if(l)fit()}
+$("tl-letter").onclick=function(){tab("l")};$("tl-ins").onclick=function(){tab("i")};
 
 /* ---------- attachment letter ---------- */
 var insured=false,seq=0,LREC=null;
@@ -464,132 +403,7 @@ $("id").addEventListener("click",async function(){
  }catch(x){say("im","err","Could not create the insurance cover. Check your connection and try again.")}
  busy(b,false,"Download insurance cover");
 });
-
-/* ---------- placement: where the student was attached, and who their trainer is ---------- */
-function initPl(depts){var sel=$("xdp");
- depts.forEach(function(n){if(ALLC.some(function(c){return c.dept===n})){var o=document.createElement("option");o.value=n;o.textContent=n;sel.appendChild(o)}});
- sel.addEventListener("change",function(){fillPlCourses("")})}
-function fillPlCourses(want){var dp=$("xdp").value,sel=$("xco");sel.textContent="";
- var o0=document.createElement("option");o0.value="";o0.textContent=dp?"Select your course":"Select your department first";sel.appendChild(o0);
- ALLC.filter(function(c){return c.dept===dp}).forEach(function(c){var o=document.createElement("option");o.value=c.title;o.textContent=c.title;sel.appendChild(o)});
- if(dp){var n=document.createElement("option");n.value="__new";n.textContent="My course is not listed";sel.appendChild(n)}
- sel.disabled=!dp;
- if(want){var has=[].some.call(sel.options,function(o){return o.value===want});if(has)sel.value=want;else{sel.value="__new";$("xcn").value=want}}
- $("xcw").hidden=sel.value!=="__new"}
-$("xco").addEventListener("change",function(){$("xcw").hidden=this.value!=="__new"});
-function showTrainer(d,lead){var m=$("xm");m.className="msg ok";m.textContent="";
- var t=d.trainer;
- if(t){m.appendChild(document.createTextNode((lead||"")+"Your trainer (supervisor) is "));
-  var b=document.createElement("b");b.textContent=t.name;m.appendChild(b);
-  m.appendChild(document.createTextNode(". Phone: "));
-  var a=document.createElement("a");a.href="tel:"+t.phone;a.textContent=t.phone;a.style.color="inherit";a.style.fontWeight="700";m.appendChild(a);m.appendChild(document.createTextNode("."))}
- else{m.className="msg info";m.textContent=(lead||"")+"A trainer has not been assigned to you yet. Please check again later."}}
-$("xsave").addEventListener("click",async function(){
- var n=cleanName($("xn").value),a=cleanAdm($("xa").value),dp=$("xdp").value,co=$("xco").value,course=co==="__new"?$("xcn").value.trim():co,
-  p1=$("xp1").value.trim(),p2=$("xp2").value.trim(),org=$("xorg").value.trim(),desc=$("xdesc").value.trim(),sup=$("xsup").value.trim(),town=$("xtown").value.trim();
- say("xm","");
- if(n.length<3){say("xm","err","Enter your full name.");return}
- if(a.length<6){say("xm","err","Enter your full admission number.");return}
- if(!dp){say("xm","err","Select your department.");return}
- if(course.length<3){say("xm","err",co==="__new"?"Type the name of your course with its level.":"Select your course.");return}
- if(p1.replace(/\D/g,"").length<9){say("xm","err","Enter phone number 1 with at least 9 digits.");return}
- if(p2&&p2.replace(/\D/g,"").length<9){say("xm","err","Phone number 2 must have at least 9 digits, or leave it empty.");return}
- if(org.length<3){say("xm","err","Enter the name of the organization.");return}
- if(desc.length<5){say("xm","err","Describe where the organization is, for example: near Nakuru Level 5 Hospital.");return}
- if(sup.length<3){say("xm","err","Enter the name of your supervisor at the organization.");return}
- if(town.length<2){say("xm","err","Enter the town.");return}
- var b=this;busy(b,true,"Submit placement details");
- try{var d=await api("placement",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:n,adm:a,dept:dp,course:course,p1:p1,p2:p2,org:org,desc:desc,sup:sup,town:town})});
-  if(d.error)say("xm","err",d.error);
-  else showTrainer(d,d.updated?"Your details were updated. ":"Thank you, your placement details were saved. ");
-  if(!d.error&&d.reset){var m=$("xm");m.textContent="Your details were updated. Because the organization or town changed, you will be assigned a trainer again. Please check again later.";m.className="msg info"}}
- catch(x){say("xm","err","Could not send. Check your connection and try again.")}
- busy(b,false,"Submit placement details")});
-$("xchk").addEventListener("click",async function(){
- var n=cleanName($("xn").value),a=cleanAdm($("xa").value);say("xm","");
- if(n.length<3){say("xm","err","Enter your full name.");return}
- if(a.length<6){say("xm","err","Enter your full admission number.");return}
- var b=this;busy(b,true,"Check my trainer");
- try{var d=await api("placement-status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:n,adm:a})});
-  if(!d.found)say("xm","err","No placement details found for this name and admission number. Fill in the form and submit it first.");
-  else{var p=d.placement;$("xdp").value=p.dept;fillPlCourses(p.course);$("xp1").value=p.p1;$("xp2").value=p.p2||"";$("xorg").value=p.org;$("xdesc").value=p.desc;$("xsup").value=p.sup;$("xtown").value=p.town;
-   showTrainer(d,"")}}
- catch(x){say("xm","err","Could not check right now. Check your connection and try again.")}
- busy(b,false,"Check my trainer")});
-window.addEventListener("load",fit);window.addEventListener("orientationchange",function(){setTimeout(fit,250)});
+window.addEventListener("load",fit);
 </script>
-<script>
-/* ---------- private marks and notices ---------- */
-var TOK="";
-function mesc(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-async function mcall(method,path,body,tok){
- var h={"Content-Type":"application/json"};if(tok)h["x-student-token"]=tok;
- var r=await fetch("/api/"+path,{method:method,headers:h,body:body?JSON.stringify(body):undefined});
- var d=await r.json().catch(function(){return{error:"Unexpected response"}});
- if(!r.ok){var e=new Error(d.error||"Something went wrong");e.status=r.status;throw e}return d}
-function mBusy(b,on,t){b.disabled=on;b.querySelector("span").textContent=on?"Please wait\u2026":t}
-function tab(w){
- var ids={l:["tl-letter","p-letter"],i:["tl-ins","p-ins"],p:["tl-pl","p-pl"],m:["tl-mk","p-mk"],n:["tl-nt","p-nt"]};
- Object.keys(ids).forEach(function(k){$(ids[k][0]).setAttribute("aria-selected",k===w);$(ids[k][1]).hidden=k!==w});
- if(w!=="m")mkHide();
- if(w==="l")fit();
- if(w==="n")openNotices()}
-$("tl-mk").onclick=function(){tab("m")};$("tl-nt").onclick=function(){tab("n")};
-
-function mkHide(){TOK="";$("mk-out").hidden=true;$("mlist").textContent="";$("mk-in").hidden=false;$("mp").value="";$("mp1").value="";$("mp2").value=""}
-$("mhide").onclick=function(){mkHide();say("mm","info","Your marks are hidden.")};
-$("mnew").onclick=function(){var open=$("mset").hidden;$("mset").hidden=!open;$("mpw").hidden=open;
- $("mgo").querySelector("span").textContent=open?"Create PIN and view marks":"View my marks";
- $("mnew").querySelector("span").textContent=open?"I already have a PIN":"First time? Create my PIN";say("mm","")};
-function avgOf(rows){var t=0,n=0;rows.forEach(function(r){if(r.out>0){t+=r.score/r.out*100;n++}});return n?Math.round(t/n*10)/10:null}
-function drawMarks(d){
- $("mk-in").hidden=true;$("mk-out").hidden=false;
- $("mwn").textContent=d.student.n;$("mwa").textContent=d.student.a+(d.student.c?" \u00b7 "+d.student.c:"");
- var box=$("mlist");
- if(d.closed){box.innerHTML='<div class="msg info">Marks are not open for viewing yet. Please check again later.</div>';return}
- if(!d.items.length){box.innerHTML='<div class="msg info">No marks have been entered for you yet. Please check again later.</div>';return}
- var groups=[],map={};d.items.forEach(function(it){if(!map[it.assess]){map[it.assess]={name:it.assess,rows:[]};groups.push(map[it.assess])}map[it.assess].rows.push(it)});
- box.innerHTML=groups.map(function(g){var a=avgOf(g.rows);
-  return '<div class="mkg"><h3>'+mesc(g.name)+'</h3>'+(a!==null?'<div class="avg">Average: '+a+'%</div>':'')+
-  '<table class="mk"><thead><tr><th>Unit</th><th style="text-align:right">Mark</th><th style="text-align:right">%</th></tr></thead><tbody>'+
-  g.rows.map(function(r){return '<tr><td>'+mesc(r.unit)+(r.note?'<div class="hint">'+mesc(r.note)+'</div>':'')+'</td><td class="n">'+r.score+' / '+r.out+'</td><td class="n">'+(Math.round(r.score/r.out*1000)/10)+'%</td></tr>'}).join("")+
-  '</tbody></table></div>'}).join("")}
-async function loadMarks(){
- try{var d=await mcall("GET","marks/me",null,TOK);drawMarks(d)}
- catch(e){mkHide();say("mm","err",e.status===401?"Your session ended. Please sign in again.":e.message)}}
-$("mgo").onclick=async function(){
- var n=cleanName($("mn").value),a=cleanAdm($("ma").value),b=this,setup=!$("mset").hidden;say("mm","");
- if(n.length<3){say("mm","err","Enter your full name.");return}
- if(a.length<6){say("mm","err","Enter your full admission number.");return}
- var lab=setup?"Create PIN and view marks":"View my marks";
- try{
-  if(setup){
-   var t=$("mt").value.trim(),p1=$("mp1").value.trim(),p2=$("mp2").value.trim();
-   if(t.replace(/\D/g,"").length<9){say("mm","err","Enter the phone number you gave on the student details form.");return}
-   if(!/^\d{5,8}$/.test(p1)){say("mm","err","Choose a PIN of 5 to 8 digits (numbers only).");return}
-   if(p1!==p2){say("mm","err","The two PINs do not match.");return}
-   mBusy(b,true,lab);var d=await mcall("POST","marks/setup",{name:n,adm:a,tel:t,pin:p1});TOK=d.token}
-  else{
-   var p=$("mp").value.trim();if(!p){say("mm","err","Enter your PIN.");return}
-   mBusy(b,true,lab);var d2=await mcall("POST","marks/login",{name:n,adm:a,pin:p});TOK=d2.token}
-  $("mp").value="";$("mp1").value="";$("mp2").value="";$("mt").value="";
-  await loadMarks()}
- catch(e){say("mm","err",e.message)}
- mBusy(b,false,lab)};
-["mn","ma","mp"].forEach(function(i){$(i).addEventListener("keydown",function(e){if(e.key==="Enter")$("mgo").click()})});
-
-/* notices */
-var NT=[],SEENK="rvnp_nt_seen";
-function seen(){try{return +localStorage.getItem(SEENK)||0}catch(x){return 0}}
-function setSeen(v){try{localStorage.setItem(SEENK,String(v))}catch(x){}}
-function badge(){var n=NT.filter(function(x){return x.t>seen()}).length,b=$("ntb");b.textContent=n>9?"9+":n;b.hidden=!n}
-function openNotices(){
- var s0=seen(),box=$("ntl");
- if(!NT.length){box.innerHTML='<div class="msg info">There are no notices yet.</div>'}
- else box.innerHTML=NT.map(function(x){var nw=x.t>s0;
-  return '<div class="nt'+(x.imp?' imp':'')+(nw?' new':'')+'"><h3>'+mesc(x.title)+(x.imp?'<span class="tg r">IMPORTANT</span>':'')+(nw?'<span class="tg">NEW</span>':'')+'</h3><div class="by">'+mesc(x.from)+' \u00b7 '+new Date(x.t).toLocaleString([],{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})+'</div><p>'+mesc(x.body)+'</p></div>'}).join("");
- if(NT.length)setSeen(Math.max.apply(null,NT.map(function(x){return x.t})));badge()}
-function loadNotices(){fetch("/api/notices").then(function(r){return r.json()}).then(function(d){NT=d.notices||[];badge();if(!$("p-nt").hidden)openNotices()}).catch(function(){})}
-loadNotices();
-</script>
+<script src="/pwa.js" defer></script>
 </body></html>

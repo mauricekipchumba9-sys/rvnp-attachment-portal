@@ -3,36 +3,30 @@
 Students download their attachment letter and personal accident insurance cover.
 The admin manages courses, insurance policy details, student lists and cover requests.
 
-## Files (all 14 must be at the top level, not inside a sub-folder)
+## Files (all 25 must be at the top level, not inside a sub-folder)
 
 | File | Purpose |
 |---|---|
 | index.html | Student page (attachment letter and insurance cover) |
 | admin.html | Admin page (open at `your-site/admin.html`) |
 | register.html | Page where students fill in their name, admission number, class and contact number (`your-site/register.html`) |
-| ilo.html | Page for ILO representatives of departments: units and insurance (open to all), student marks and notices (access code needed) (`your-site/ilo.html`) |
-| hod.html | Page for the ILO HOD / Deputy HOD to assign trainers to placed students and post official notices. Opened only through the secret link from the admin page |
+| placement.html | Students tell the college where they were placed and see their trainer (`your-site/placement.html`) |
+| hod.html | ILO HOD / deputy HOD page for adding trainers and assigning students (`your-site/hod.html`, needs the access code) |
+| marks.js | Marks panel (view, upload, download) used on the admin, HOD and ILO pages |
+| manifest.webmanifest, manifest-ilo.webmanifest, manifest-hod.webmanifest, sw.js, pwa.js, icon-192.png, icon-512.png, icon-maskable.png, apple-touch-icon.png | Make the portal installable as an app |
+| ilo.html | Page for ILO representatives of departments (open at `your-site/ilo.html`) |
 | api.mjs | Server code: search, requests, admin, storage |
 | netlify.toml, package.json | Netlify settings |
 | letterhead.png, signature.png, iso.png | Images printed on the letter |
 | cover_bg.jpg, cover_font.ttf | Background and font for the insurance cover |
 
-## Links to send (admin page)
-
-On the admin page, right under the student link and the ILO units link, the card **Links for the HOD, Deputy HOD and ILO representatives** shows:
-
-- **ILO HOD / Deputy HOD link** (`your-site/hod.html#k=...`). The HOD and Deputy HOD both use this one link. Copy it or share it on WhatsApp.
-- **ILO representatives link** with the access code included, for marks and notices.
-
-The same links are also in the **Placements** tab (HOD link) and the **Student marks** tab (ILO link and code), where you can make new ones.
-
 ## Put the files on GitHub (do this first)
 
-1. Unzip MKLETTERS_Portal_Flat.zip. Open the folder and check the 14 files are directly inside.
+1. Unzip MKLETTERS_Portal_Flat.zip. Open the folder and check the 10 files are directly inside.
 2. Sign in at github.com (free account).
 3. Tap **+**, then **New repository**. Use any name (for example `rvnp-attachment-portal`), choose **Private**, then **Create repository**.
-4. Tap **uploading an existing file**, then **choose your files**. Select all 14 files (not the folder, not the zip). On a phone, turn on **Desktop site** in your browser first. Upload in batches if needed.
-5. Check that all 14 files are listed, then tap **Commit changes**.
+4. Tap **uploading an existing file**, then **choose your files**. Select all 10 files (not the folder, not the zip). On a phone, turn on **Desktop site** in your browser first. Upload in batches if needed.
+5. Check that all 10 files are listed, then tap **Commit changes**.
 
 To update later: open the repository, **Add file**, then **Upload files**. Files with the same name replace the old ones.
 
@@ -129,69 +123,70 @@ The student's cover (and the policy number and insurer in their attachment lette
 4. **Download Excel (by class)** gives one file with a Summary sheet (students per class and the total), an "All students" sheet sorted by class, and a separate sheet for each class. **Download CSV** gives the same list as one sorted file.
 5. Remove a student with the Remove button next to their name.
 
+## Installing the portal as an app
+
+Every page that students open shows an **Install app** button at the bottom right.
+- **Android (Chrome, Edge, Samsung Internet):** tap **Install app**, then **Install**. The RVNP icon appears on the home screen and opens the portal like an app.
+- **iPhone / iPad:** open the link in **Safari**, tap **Install app** to see the steps (Share, then **Add to Home Screen**). Apple does not allow a one-tap install.
+- The button disappears once the app is installed. The installed app always opens the latest version when the phone is online.
+- Browsers only offer installation on the secure (https) Netlify address, which yours is.
+If you ever change sw.js, change the `VERSION` line at the top of it so phones refresh their saved copy.
+
 ## Placements and trainers
 
-**Students.** On the student page, the **Placement** tab. Once a student has secured a place they enter: full name, admission number, department, course, phone number 1, phone number 2 (optional), name of the organization, where it is (for example "near Nakuru Level 5 Hospital"), their supervisor at the organization, and the town. Submitting again with the same name and admission number updates the record. If they change the organization or town, their trainer is cleared so the HOD assigns again.
-
-**Sending the HOD link.**
-1. Admin page, **Placements** tab. Copy the **ILO HOD / Deputy HOD link** (it looks like `your-site/hod.html#k=...`) or press **Share on WhatsApp**.
-2. Anyone with the link can use the HOD page, so send it only to the HOD and Deputy HOD. If it gets to the wrong person, press **Make a new link**. The old link stops working at once.
-
-**The HOD / Deputy HOD page.**
-1. Shows how many students are placed, how many have a trainer, how many are waiting, and how many trainers there are.
-2. **Trainers**: type a trainer's name and phone number and press **Add trainer**. Next to each trainer is the number of students assigned to them. **View students** lists them, **Edit** fixes a name or number, **Remove** deletes the trainer and returns their students to "Waiting".
-3. **Students**: search by name, admission number, organization or town, or filter by department or trainer. Tick students (or **Tick all shown**), choose a trainer and press **Assign**. **Remove trainer** takes the ticked students off their trainer.
-4. **Download Excel (by trainer)** gives a Summary sheet (students per trainer), an All placements sheet, a Waiting sheet, and one sheet per trainer. **Download CSV** gives one flat list.
-
-**Students see their trainer.** On the student page, **Placement** tab, a student enters their name and admission number and presses **Check my trainer**. They see their trainer's name and phone number, and their saved placement details are filled back into the form. They only see their own record.
-
-The admin page **Placements** tab also shows the totals, trainers with their student counts, a search, a Remove button for a wrong entry, and a CSV download.
-
-## Student marks (private) and notices
-
-**Who can do what**
-
-| Person | Can do |
-|---|---|
-| Student | See **only their own** marks (My marks tab) and read notices for students |
-| ILO representative | Search a student and enter, correct or delete marks; read notices; post their own notices (shown with their name) and delete their own. Needs the ILO access code |
-| ILO HOD / Deputy HOD | Post and delete their own notices (HOD page, **Official notices** card) |
-| Admin | Everything above, plus hide/show marks, reset a student PIN, make a new ILO code, delete any notice |
-
-**How a student keeps their marks private**
-
-1. The student's page has **My marks** and **Notices** tabs.
-2. First time: the student presses **First time? Create my PIN**, enters name, admission number, the **phone number they gave on the student details form** (`register.html`) and chooses a PIN of 5 to 8 digits. The phone number proves it is them. The PIN can only be created once, so nobody else can take it over later.
-3. After that they sign in with name, admission number and PIN. Five wrong PINs lock that student for 15 minutes.
-4. The server returns marks only for the student named inside their sign-in token. There is no way to ask for another student's marks, and no search on the student side. The token lasts 2 hours and is kept only in the open page, so marks disappear when the student leaves the tab or presses **Hide my marks**.
-5. PINs are stored scrambled (salted scrypt), never as the PIN itself.
-6. Students must have filled the student details form. If a student forgets the PIN, admin finds them under **Student marks, Find a student** and presses **Reset PIN**.
-
-**ILO representatives entering marks**
-
-1. Admin page, **Student marks** tab, **ILO representatives access**: copy the link (it contains the access code) or the code, and send it to the representatives on WhatsApp.
-2. The representative opens the link, enters their name once and the page remembers them on that phone. Opening `your-site/ilo.html` and tapping **Student marks** and typing the code works too.
-3. **Student marks** tab: type 3 or more letters of the name or the admission number, tap the student, then enter **Unit**, **Assessment** (CAT 1, CAT 2, End of term exam, and so on), **Mark** and **Out of**. Saving the same unit and assessment again replaces the earlier mark, so nothing is entered twice. Unit, assessment and out-of stay filled in so the next student is quick.
-4. Every mark records who entered it. Representatives can edit or delete marks from the list under the form.
-5. **Make a new code** (admin) stops the old code and link at once. Anyone who had it must use the new one.
-6. Untick **Students can view their marks** on the admin page to hide all marks from students while entry is going on. Representatives can keep entering.
-
-**Official notices**
-
-1. Admin page **Notices** tab, the HOD page, or the ILO page **Notices** tab (representatives): **Official notices** card: write a title and message, choose **Everyone**, **Students only** or **ILO representatives only**, tick **Important** if needed, and post.
-2. Students see notices on their **Notices** tab without signing in. ILO representatives see theirs on the **Notices** tab of the ILO page. A red badge shows the number of unread notices.
-3. The HOD can delete notices posted from the HOD page and by representatives. A representative can delete only their own. Admin can delete any. A representative's notice always shows their own name as sender.
-
-**Screens.** The pages fit phones, tablets and laptops and re-fit when you rotate the screen. If a phone does not rotate, turn on auto-rotate in the phone's quick settings.
-4. Do not put marks or personal details in a notice, because students read notices without signing in. Notices are not a private chat: they go to everyone in the chosen group.
+1. **Students** open the **Attachment placement** card on the portal (or `your-site/placement.html`) once they have a place. They enter name, admission number, department, course, two phone numbers, the organization with a description of where it is (road and landmark, "near ..."), their supervisor at the organization, and the town. Submitting again with the same name and admission number corrects the entry.
+2. **Admin page, Placements tab:** set the **HOD access code** (at least 6 characters), copy the **HOD link** (`your-site/hod.html`) and send it, with the code, to the ILO HOD / deputy HOD. The tab also shows how many students are placed and assigned, per department and per trainer, and downloads everything as Excel (summary, all placements with the trainer, one sheet per department).
+3. **The HOD** opens the link, types the code, and:
+   - adds trainers (name and phone number),
+   - filters students by department, town, or "waiting for a trainer", ticks the students (or **Select all shown**), chooses a trainer and presses **Assign**,
+   - sees how many students each trainer has, and can open or remove a trainer. Removing a trainer sends their students back to "waiting".
+   - downloads an Excel file with one sheet per trainer.
+4. **Students see their trainer:** on the same placement page, under **Find my trainer**, they type their name or admission number and see their trainer's name and phone number (tap to call) as soon as one is assigned.
+The HOD code protects students' phone numbers. Share it only with the HOD and deputy HOD, and change it from the Placements tab if it leaks.
 
 ## Troubleshooting
 
 - **Old version still showing:** open the site in a private tab or hard refresh.
-- **HOD page says the link is not valid:** the link was replaced with **Make a new link**. Send the current one from the admin Placements tab.
-- **A student cannot create a PIN:** check they filled the student details form, and that the phone number they type matches the one on that form (last 9 digits). Use the same name and admission number.
-- **ILO code not accepted:** a new code may have been made. Copy the current one from the admin Student marks tab.
 - **Admin sign-in fails:** check `ADMIN_PASSWORD`, then redeploy.
 - **Search or requests do nothing:** api.mjs was not deployed. Check it is in the repository at the top level.
 - **No "Link repository" button:** open **Continuous deployment** and check what it says, or create a new site from GitHub (see above).
 - **Letter PDF differs from preview:** use an up-to-date browser and report which phone and browser you used.
+
+## Installing the app (everyone)
+
+Every page has a green **Install app** button: students, admin, ILO representatives, and the HOD / deputy HOD. The ILO page installs as "RVNP ILO" and opens straight to the ILO page. The HOD page installs as "RVNP HOD" and opens straight to the HOD page. On iPhone the button shows the Share, then Add to Home Screen steps.
+
+## Look
+
+Green and white theme with orange accents (title underline, counters, selected tabs, hover, missing-marks figures). Colours are set in one place at the top of each page (`:root{--ac:...}`).
+
+## Marks
+
+**Who can do what**
+
+| Who | See | Download | Upload marks |
+|---|---|---|---|
+| ILO representative | Only their own department | One class, or the whole department | Yes, own department only |
+| HOD / deputy HOD (access code) | All departments | One class, a department, or everything | Yes |
+| Admin | All departments | One class, a department, or everything | Yes |
+
+**Setting it up (admin page, Marks tab)**
+1. **Department codes**: pick a department, type a code (6+ characters), Save. Give each ILO representative the code for their department only. One code opens one department.
+2. **Upload marks**: Excel or CSV with columns **Admission number**, **Marks**, and optionally **Out of** (default 100). Students are matched by admission number. Uploading again updates marks already saved. Rows that do not match anyone, or have marks above the total, are reported and skipped.
+3. **Class to department**: the system works out each class's department from the placements its students filled in. A class with no placements shows "Not yet assigned". Press **Change** next to the class to set its department.
+
+**Downloads (Excel)**
+- Every class sheet lists **all students in the database for that class**, not only those with marks. A class of 50 with 25 marks shows "Marks received: 25 of 50 (50%)", "Marks missing: 25", and each missing student marked **NOT YET SUBMITTED**.
+- Each student row shows Marks, Out of and **Percentage**.
+- The **Summary** sheet has one line per class: students, marks received, marks missing, % of class with marks, average, highest and lowest percentage.
+- Whole department: Summary plus one sheet per class, sorted by class. Bulk download adds an **All students** sheet with everyone in one list.
+
+**ILO representatives can upload and edit.** On the ILO page, after opening their department with its code, a rep can upload an Excel/CSV of marks, or choose a class and press **Edit marks of selected class** to change a mark or clear it. Students from other departments are skipped and reported, so a rep can never change another department's marks.
+
+**Entering marks:** in the Marks panel, use **Search a student** (name or admission number) to find one student and type their mark, or choose a class and press **Edit whole class** to enter marks for everyone in it. Searches only cover the rep's own department.
+
+**Standard marksheets (orange "Standard marksheets" button in the Marks panel)**
+1. Press the button, then upload your department's standard marksheet (Excel **.xlsx**), with the students already arranged in the order you want. It needs a header row with an **Admission** column and a **Marks** column (and optionally a **%** column). It is saved for your department, so you upload it once.
+2. Enter or upload the marks as usual.
+3. Press **Transfer marks** next to the marksheet. Your sheet downloads with the marks filled in. Students stay in your order, and your layout, colours and merged cells are kept. Matching is by admission number.
+4. A report shows how many marks were transferred, which students in your sheet have no marks yet, which admission numbers were not found, and which students with marks are not on your sheet. If the system cannot find your Marks column, type its letter (for example F) in the box before pressing Transfer. Cells that contain formulas are left alone.

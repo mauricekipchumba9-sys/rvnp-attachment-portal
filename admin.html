@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>RVNP Portal Admin</title>
 <style>
-:root{--bg:#eef2f6;--card:#fff;--ink:#12304f;--mut:#566b80;--ac:#1d5fa6;--acd:#154a85;--soft:#e4eefa;--bd:#c7d3e0;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1722;--card:#16222f;--ink:#e6eef7;--mut:#9db0c3;--ac:#6fb0f5;--acd:#8cc2fa;--soft:#1c3250;--bd:#2f4358;--in:#101b27;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#0b1420}}
+:root{--bg:#f3f8f4;--card:#fff;--ink:#12301f;--mut:#51675a;--ac:#17803f;--acd:#0f6330;--soft:#e3f3e8;--bd:#cfe0d4;--in:#fff;--ok:#17703a;--okb:#e6f4ea;--er:#b3261e;--erb:#fdecea;--on:#fff;--or:#f28a1d;--orb:#fff1e0;--ord:#c2610a}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1a12;--card:#14261b;--ink:#e6f4ea;--mut:#9fb8a7;--ac:#4cc77a;--acd:#6fd99a;--soft:#1a3524;--bd:#2c4a38;--in:#0f1f16;--ok:#6fd08c;--okb:#14301f;--er:#ff8a80;--erb:#3a1916;--on:#08140d;--or:#ffa94d;--orb:#3a2610;--ord:#ffbf73}}
 *,*:before,*:after{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
@@ -44,17 +44,37 @@ dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);colo
 dialog::backdrop{background:rgba(0,0,0,.45)}
 .chk{display:flex;gap:8px;align-items:center;font-weight:600;margin:6px 0 10px}.chk input{width:auto;min-height:0}
 .badge{display:inline-block;background:var(--soft);padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600}
-
-/* responsive: phone, tablet, laptop, and either orientation */
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);overflow-wrap:break-word}
-img,svg,canvas{max-width:100%}
-input,select,textarea,button{max-width:100%}
-.scroll,.mkg{overflow-x:auto;-webkit-overflow-scrolling:touch}
-@media (min-width:760px){.wrap{padding-left:28px;padding-right:28px}}
-@media (min-width:1100px){.wrap{max-width:1040px}}
-@media (orientation:landscape) and (max-height:520px){.wrap{padding-top:12px;padding-bottom:24px}h1{font-size:22px!important}header{margin-bottom:12px}}
-</style></head><body>
+/*GREEN*/
+body{background:var(--bg) linear-gradient(180deg,var(--soft),transparent 260px) no-repeat}
+header{padding-bottom:14px;border-bottom:4px solid var(--or);position:relative}
+h1{color:var(--ac)}
+.panel,.card2,.tile{box-shadow:0 2px 10px rgba(23,128,63,.08)}
+.panel{border-top:4px solid var(--ac)}
+.tile:hover{box-shadow:0 4px 16px rgba(23,128,63,.18)}
+.btn{background:linear-gradient(135deg,var(--ac),var(--acd));box-shadow:0 2px 8px rgba(23,128,63,.28)}
+.btn.sec{background:var(--soft);box-shadow:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(23,128,63,.2)}
+/*ORANGE*/
+header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px;background:var(--or);margin-top:8px}
+.badge{background:var(--or)!important;color:#fff!important}
+.tab[aria-selected="true"]{border-color:var(--or)!important;background:var(--orb)!important;color:var(--ord)}
+.tile[aria-selected="true"] .ic{background:var(--or)!important}
+.tile:hover{border-color:var(--or)!important}
+.tile .ic{background:var(--orb)!important;color:var(--ord)!important}
+.btn:hover{background:var(--or)!important;box-shadow:0 3px 10px rgba(242,138,29,.4)}
+.btn.sec:hover{background:var(--orb)!important;border-color:var(--or)}
+.panel h2{display:inline-block;border-bottom:3px solid var(--or);padding-bottom:2px}
+.msg.info{background:var(--orb);color:var(--ord)}
+:focus-visible{outline-color:var(--or)!important}
+</style><link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17803f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RVNP Attachment">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/icon-192.png">
+</head><body>
 <div class="wrap">
 
 <section id="login" class="card" style="max-width:420px;margin:60px auto">
@@ -84,19 +104,6 @@ input,select,textarea,button{max-width:100%}
 <div class="row"><button class="btn" id="icp">Copy link</button><a class="btn sec" id="iwa" target="_blank" rel="noopener">Share on WhatsApp</a></div>
 <div class="msg" id="mi"></div>
 </div>
-<div class="card" id="lk-card">
-<h2>Links for the HOD, Deputy HOD and ILO representatives</h2>
-<p class="lead">Send each link only to the people it is for. The HOD and Deputy HOD use the same link: it lets them assign trainers and post notices. The ILO representatives link signs them in with the access code so they can enter marks.</p>
-<label for="lk-h">ILO HOD / Deputy HOD link</label>
-<input id="lk-h" readonly onclick="this.select()" placeholder="Loading...">
-<div class="row"><button class="btn" id="lk-hc" type="button">Copy link</button><a class="btn sec" id="lk-hw" target="_blank" rel="noopener">Share on WhatsApp</a><a class="btn sec" id="lk-ho" target="_blank" rel="noopener">Open HOD page</a></div>
-<label for="lk-r" style="margin-top:16px">ILO representatives link (student marks and notices, includes the access code)</label>
-<input id="lk-r" readonly onclick="this.select()" placeholder="Loading...">
-<div class="hint">Access code: <b id="lk-c"></b></div>
-<div class="row"><button class="btn" id="lk-rc" type="button">Copy link</button><button class="btn sec" id="lk-cc" type="button">Copy code</button><a class="btn sec" id="lk-rw" target="_blank" rel="noopener">Share on WhatsApp</a></div>
-<div class="hint" style="margin-top:8px">To replace a link that reached the wrong person: HOD link, Placements tab, <b>Make a new link</b>. ILO code, Student marks tab, <b>Make a new code</b>.</div>
-<div class="msg" id="lk-m"></div>
-</div>
 
 
 <div class="tabs" role="tablist">
@@ -105,9 +112,8 @@ input,select,textarea,button{max-width:100%}
 <button class="tab" id="t-let" role="tab" aria-selected="false">Attachment letters</button>
 <button class="tab" id="t-ilo" role="tab" aria-selected="false">ILO units <span class="badge" id="icnt">0</span></button>
 <button class="tab" id="t-reg" role="tab" aria-selected="false">Student database <span class="badge" id="gcnt">0</span></button>
-<button class="tab" id="t-pl" role="tab" aria-selected="false">Placements <span class="badge" id="plcnt">0</span></button>
-<button class="tab" id="t-mk" role="tab" aria-selected="false">Student marks</button>
-<button class="tab" id="t-nt" role="tab" aria-selected="false">Notices</button>
+<button class="tab" id="t-pm" role="tab" aria-selected="false">Placements <span class="badge" id="pmcnt">0</span></button>
+<button class="tab" id="t-mk" role="tab" aria-selected="false">Marks</button>
 </div>
 
 <!-- INSURANCE -->
@@ -243,83 +249,36 @@ input,select,textarea,button{max-width:100%}
 </div>
 
 <!-- PLACEMENTS -->
-<div id="s-pl" hidden>
+<div id="s-mk" hidden><section class="panel" style="margin-top:14px"><h2>Marks</h2><p class="lead">See marks for every department. Download one class, a whole department, or everything.</p><div id="mkbox"></div></section></div>
+<div id="s-pm" hidden>
 <div class="card">
-<h2>ILO HOD / Deputy HOD link</h2>
-<p class="lead">Send this link to the HOD or Deputy HOD of the Industrial Liaison Office. It opens the list of placed students, where she types in trainers' names and phone numbers and assigns students to them. Students then see their trainer on the student page. Anyone with the link can use it, so only send it to the right people.</p>
-<input id="hl" readonly onclick="this.select()">
-<div class="row"><button class="btn" id="hcp">Copy link</button><a class="btn sec" id="hwa" target="_blank" rel="noopener">Share on WhatsApp</a><a class="btn sec" id="hop" target="_blank" rel="noopener">Open HOD page</a></div>
-<div class="row"><button class="btn sec" id="hnew">Make a new link</button><span class="hint">The old link stops working straight away.</span></div>
-<div class="msg" id="plm"></div>
-</div>
-<div class="card">
-<h2>Placements</h2>
-<p style="font-size:20px;margin:0 0 4px"><b id="pl1">0</b> students placed, <b id="pl2">0</b> with a trainer, <b id="pl3">0</b> waiting</p>
-<div class="row"><button class="btn sec" id="plr">Refresh</button><button class="btn sec" id="plc">Download CSV</button></div>
-<div class="hint" style="margin-top:8px">For assigning trainers and the Excel file split by trainer, use the HOD page.</div>
-<div class="scroll"><table><thead><tr><th>Trainer</th><th>Phone</th><th>Students</th></tr></thead><tbody id="pltb"></tbody></table></div>
-</div>
-<div class="card">
-<h2>Find a student</h2>
-<label for="plq">Search by name, admission number, organization or town</label>
-<input id="plq" placeholder="Type at least 2 letters">
-<div class="hint" id="plh" style="margin:8px 0"></div>
-<div class="scroll"><table><thead><tr><th>Student</th><th>Organization</th><th>Town and phones</th><th>Trainer</th></tr></thead><tbody id="pls"></tbody></table></div>
-</div>
-</div>
-
-<!-- MARKS -->
-<div id="s-mk" hidden>
-<div class="card">
-<h2>Marks privacy</h2>
-<p class="lead">Students see only their own marks. They sign in with their name, admission number and a personal PIN, which they create once by confirming the phone number they gave on the student details form. Nobody can search for or open another student's marks. Five wrong PINs lock that student's sign-in for 15 minutes.</p>
-<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="mk-open" style="width:20px;height:20px;min-height:0"> Students can view their marks</label>
-<div class="hint">Untick to hide all marks from students while you are still entering them. ILO representatives can keep entering.</div>
-<div class="msg" id="mk-m1"></div>
+<h2>Placement links</h2>
+<p class="lead">Students send where they were placed (organization, town, supervisor, phones). The ILO HOD / deputy HOD then assigns each student to a trainer. Students can see their trainer on the same page.</p>
+<label for="pml">Link for students</label>
+<input id="pml" readonly onclick="this.select()">
+<div class="row"><button class="btn" id="pmcp">Copy link</button><a class="btn sec" id="pmwa" target="_blank" rel="noopener">Share on WhatsApp</a></div>
+<label for="phl" style="margin-top:14px;display:block">Link for the ILO HOD / deputy HOD (needs the access code below)</label>
+<input id="phl" readonly onclick="this.select()">
+<div class="row"><button class="btn" id="phcp">Copy HOD link</button><a class="btn sec" id="phwa" target="_blank" rel="noopener">Share on WhatsApp</a></div>
+<div class="grid" style="margin-top:14px"><div class="full"><label for="phc">HOD access code (at least 6 characters)</label><input id="phc" type="password" autocomplete="off" placeholder="Type a new code to set or change it"><div class="hint" id="phs"></div></div></div>
+<div class="row"><button class="btn" id="phk">Save access code</button></div>
+<div class="msg" id="pmm"></div>
 </div>
 <div class="card">
-<h2>ILO representatives access</h2>
-<p class="lead">ILO representatives open the ILO link, enter this access code and their name, then enter marks by searching a student. Send the code only to representatives. If it spreads, make a new code and the old one stops working at once.</p>
-<label for="mk-code">Access code</label><input id="mk-code" readonly onclick="this.select()">
-<label for="mk-link" style="margin-top:10px">Link that signs in with the code</label><input id="mk-link" readonly onclick="this.select()">
-<div class="row"><button class="btn" id="mk-cc" type="button">Copy link</button><button class="btn sec" id="mk-cd" type="button">Copy code</button><a class="btn sec" id="mk-wa" target="_blank" rel="noopener">Share on WhatsApp</a><button class="btn sec" id="mk-new" type="button">Make a new code</button></div>
-<div class="msg" id="mk-m2"></div>
+<h2>Totals</h2>
+<p style="font-size:20px;margin:0 0 4px"><b id="pmt">0</b> students placed &middot; <b id="pma">0</b> assigned &middot; <b id="pmu">0</b> waiting for a trainer</p>
+<div class="row"><button class="btn" id="pmxl">Download Excel</button><button class="btn sec" id="pmrf">Refresh</button></div>
+<div class="scroll"><table><thead><tr><th>Department</th><th>Placed</th><th>Assigned</th></tr></thead><tbody id="pmd"></tbody></table></div>
+<div class="hint">Tap a department to see its students.</div>
+<h3 style="margin-top:16px">Trainers</h3>
+<div class="scroll"><table><thead><tr><th>Trainer</th><th>Phone</th><th>Students</th></tr></thead><tbody id="pmtr"></tbody></table></div>
 </div>
 <div class="card">
-<h2>Find a student</h2>
-<p class="lead">See or delete a student's marks, and reset a forgotten PIN.</p>
-<input id="mk-q" autocomplete="off" placeholder="Name or admission number (3 or more letters)">
-<div id="mk-sg" style="margin-top:8px"></div>
-<div id="mk-st" hidden>
-<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px"><div><b id="mk-sn"></b><div class="hint" id="mk-sa"></div></div><div><button class="btn sec" id="mk-rp" type="button">Reset PIN</button></div></div>
-<div class="scroll"><table><thead><tr><th>Assessment</th><th>Unit</th><th>Mark</th><th></th></tr></thead><tbody id="mk-tb"></tbody></table></div>
-</div>
-<div class="msg" id="mk-m3"></div>
-</div>
-<div class="card">
-<h2>Summary</h2>
-<p style="font-size:20px;margin:0 0 4px"><b id="mk-n1">0</b> students have marks, <b id="mk-n2">0</b> marks entered</p>
-<div class="scroll"><table><thead><tr><th>Class</th><th>Students with marks</th><th>Marks entered</th></tr></thead><tbody id="mk-cl"></tbody></table></div>
-<div class="row"><button class="btn sec" id="mk-rf" type="button">Refresh</button></div>
-</div>
-</div>
-
-<!-- NOTICES -->
-<div id="s-nt" hidden>
-<div class="card">
-<h2>Official notices</h2>
-<p class="lead">Post a message that students and/or ILO representatives see on their pages straight away. A red badge shows on their Notices tab until they read it. Students see notices without signing in, so never put marks or personal details in a notice.</p>
-<div class="grid">
-<div class="full"><label for="nt-t">Title</label><input id="nt-t" maxlength="120" autocomplete="off" placeholder="e.g. Attachment reports are due on Monday"></div>
-<div class="full"><label for="nt-b">Message</label><textarea id="nt-b" maxlength="2000" placeholder="Write the notice here"></textarea></div>
-<div><label for="nt-a">Send to</label><select id="nt-a"><option value="all">Everyone (students and ILO reps)</option><option value="students">Students only</option><option value="reps">ILO representatives only</option></select></div>
-<div><label for="nt-f">Signed by (optional)</label><input id="nt-f" maxlength="60" autocomplete="off" placeholder="Industrial Liaison Office"></div>
-</div>
-<label style="display:flex;gap:8px;align-items:center;font-weight:600;margin:12px 0 0"><input type="checkbox" id="nt-i" style="width:20px;height:20px;min-height:0"> Mark as important (shown in red)</label>
-<div class="msg" id="nt-m"></div>
-<div class="row"><button class="btn" id="nt-p" type="button">Post notice</button><button class="btn sec" id="nt-r" type="button">Refresh</button></div>
-<h3 style="margin:22px 0 6px;font-size:16px">Posted notices</h3>
-<div id="nt-l"></div>
+<h2>Find placements</h2>
+<label for="pmq">Search by name, admission number, organization, town or trainer</label>
+<input id="pmq" placeholder="Type at least 2 letters, or tap a department above">
+<div class="hint" id="pmh" style="margin:8px 0"></div>
+<div id="pml2"></div>
 </div>
 </div>
 
@@ -375,13 +334,12 @@ $("out").onclick=signOut;
 async function start(){
  D=await call("GET","admin/data");$("login").hidden=true;$("app").hidden=false;
  var s=D.settings;$("pn").value=s.policyNumber;$("pi").value=s.insurer;$("ps").value=s.policyStart;$("pe").value=s.policyEnd;$("pd").value=s.issueDate;
- fillDepts();drawStudents();drawCourses();drawReqs();drawIlo();drawNita();loadReg();loadLinks()}
+ fillDepts();drawStudents();drawCourses();drawReqs();drawIlo();drawNita();loadReg()}
 if(TOKEN)start().catch(function(){signOut()});
 
 /* tabs */
-function tab(w){["i","r","l","o","g","p","m","n"].forEach(function(k){var id={i:"ins",r:"req",l:"let",o:"ilo",g:"reg",p:"pl",m:"mk",n:"nt"}[k];$("t-"+id).setAttribute("aria-selected",k===w);$("s-"+id).hidden=k!==w});if(w==="g"&&!REG)loadReg();if(w==="p")loadPl();if(w==="m")loadMk();if(w==="n")ntLoad()}
-$("t-mk").onclick=function(){tab("m")};$("t-nt").onclick=function(){tab("n")};
-$("t-ins").onclick=function(){tab("i")};$("t-req").onclick=function(){tab("r")};$("t-let").onclick=function(){tab("l")};$("t-ilo").onclick=function(){tab("o")};$("t-reg").onclick=function(){tab("g")};$("t-pl").onclick=function(){tab("p")};
+var MK=null;function tab(w){["i","r","l","o","g","m","k"].forEach(function(k){var id={i:"ins",r:"req",l:"let",o:"ilo",g:"reg",m:"pm",k:"mk"}[k];$("t-"+id).setAttribute("aria-selected",k===w);$("s-"+id).hidden=k!==w});if(w==="g"&&!REG)loadReg();if(w==="m"&&!PM)loadPm();if(w==="k"&&!MK)MK=RVMarks.mount($("mkbox"),{role:"admin",headers:function(){return{Authorization:"Bearer "+(TOKEN||"")}},onAuthFail:signOut})}
+$("t-ins").onclick=function(){tab("i")};$("t-req").onclick=function(){tab("r")};$("t-let").onclick=function(){tab("l")};$("t-ilo").onclick=function(){tab("o")};$("t-reg").onclick=function(){tab("g")};$("t-pm").onclick=function(){tab("m")};$("t-mk").onclick=function(){tab("k")};
 
 /* policy */
 $("sp").onclick=async function(){say("mp","");try{
@@ -605,41 +563,44 @@ $("gxl").onclick=function(){if(!REG||!REG.length){say("gm","err","There is nothi
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,function(){$("gl").select();document.execCommand("copy");ok()});
   else{$("gl").select();document.execCommand("copy");ok()}}})();
 
-
-/* placements and the HOD link */
-var PL=null,HK="";
-function hodUrl(){return location.origin+"/hod.html#k="+HK}
-async function loadPl(){say("plm","");try{
- var d=await call("GET","hod/data"),k=await call("GET","admin/hod-link");PL=d;HK=k.key;drawPl()}catch(e){say("plm","err",e.message)}}
-function plTrainer(p){return PL.trainers.find(function(t){return t.id===p.tid})}
-function drawPl(){drawLinks();if(!PL)return;var P=PL.placements,T=PL.trainers;
- var done=P.filter(function(p){return plTrainer(p)}).length;
- $("plcnt").textContent=P.length;$("pl1").textContent=P.length;$("pl2").textContent=done;$("pl3").textContent=P.length-done;
- var u=hodUrl();$("hl").value=u;$("hop").href=u;
- $("hwa").href="https://wa.me/?text="+encodeURIComponent("Industrial attachment placements: assign trainers to students here: "+u);
- $("pltb").innerHTML=T.map(function(t){return "<tr><td><b>"+esc(t.name)+"</b></td><td>"+esc(t.phone)+"</td><td>"+P.filter(function(p){return p.tid===t.id}).length+"</td></tr>"}).join("")||"<tr><td colspan=3>No trainers yet. The HOD adds them on her page.</td></tr>";
- drawPlList()}
-function drawPlList(){if(!PL)return;var q=$("plq").value.trim().toUpperCase();
- if(q.length<2){$("pls").innerHTML="";$("plh").textContent="Type at least 2 letters to see students.";return}
- var rows=PL.placements.filter(function(p){return (p.n+" "+p.a+" "+p.org+" "+p.town).toUpperCase().indexOf(q)>=0});
- $("plh").textContent=rows.length+" found"+(rows.length>100?" (showing the first 100)":"")+".";
- $("pls").innerHTML=rows.slice(0,100).map(function(p){var t=plTrainer(p);
-  return "<tr><td><b>"+esc(p.n)+"</b><div class=\"hint\">"+esc(p.a)+"</div><div class=\"hint\">"+esc(p.course)+"</div><div style=\"margin-top:6px\"><button class=\"btn del\" data-pd=\""+p.id+"\" style=\"min-height:32px;padding:3px 10px;font-size:13px\">Remove</button></div></td>"+
-  "<td><b>"+esc(p.org)+"</b><div class=\"hint\">"+esc(p.desc)+"</div><div class=\"hint\">Supervisor: "+esc(p.sup)+"</div></td>"+
-  "<td>"+esc(p.town)+"<div class=\"hint\">"+esc(p.p1)+(p.p2?", "+esc(p.p2):"")+"</div></td>"+
-  "<td>"+(t?esc(t.name)+"<div class=\"hint\">"+esc(t.phone)+"</div>":"<span class=\"tag\">Waiting</span>")+"</td></tr>"}).join("")}
-$("plq").oninput=drawPlList;$("plr").onclick=loadPl;
-$("pls").onclick=async function(e){var id=e.target.getAttribute("data-pd");if(!id)return;if(!confirm("Remove this student's placement details?"))return;
- try{await call("DELETE","admin/placements/"+id);PL.placements=PL.placements.filter(function(p){return p.id!==id});drawPl()}catch(x){say("plm","err",x.message)}};
-$("hnew").onclick=async function(){if(!confirm("Make a new HOD link? The old link will stop working and you will need to send the new one."))return;
- try{var k=await call("POST","admin/hod-link");HK=k.key;drawPl();say("plm","ok","New link made. Send it to the HOD. The old one no longer works.")}catch(e){say("plm","err",e.message)}};
-$("hcp").onclick=function(){var u=hodUrl(),done=function(){say("plm","ok","Link copied.")};
- if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(done,function(){$("hl").select();document.execCommand("copy");done()});
- else{$("hl").select();document.execCommand("copy");done()}};
-$("plc").onclick=function(){if(!PL||!PL.placements.length){say("plm","err","There is nothing to download yet.");return}
- var H=["Student name","Admission number","Department","Course","Phone 1","Phone 2","Organization","Location description","Supervisor at organization","Town","Trainer","Trainer phone"];
- var l=[H.join(",")].concat(PL.placements.map(function(p){var t=plTrainer(p);return [p.n,p.a,p.dept,p.course,p.p1,p.p2||"",p.org,p.desc,p.sup,p.town,t?t.name:"",t?t.phone:""].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",")}));
- var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="RVNP_placements.csv";a.click()};
+/* placements (students' attachment places) and trainers */
+var PM=null,PDEPT="";
+async function loadPm(){say("pmm","");try{PM=await call("GET","hod/data");drawPm()}catch(e){say("pmm","err",e.message)}}
+function trOf(id){return (PM.trainers||[]).find(function(t){return t.id===id})}
+function drawPm(){if(!PM)return;var P=PM.placements,as=P.filter(function(p){return p.tid}).length,by={},ba={};
+ P.forEach(function(p){by[p.dept]=(by[p.dept]||0)+1;if(p.tid)ba[p.dept]=(ba[p.dept]||0)+1});
+ $("pmt").textContent=P.length;$("pma").textContent=as;$("pmu").textContent=P.length-as;$("pmcnt").textContent=P.length;
+ $("pmd").innerHTML=Object.keys(by).sort().map(function(d){return '<tr data-pd="'+esc(d)+'" style="cursor:pointer"><td><b>'+esc(d)+'</b></td><td>'+by[d]+'</td><td>'+(ba[d]||0)+'</td></tr>'}).join("")||"<tr><td colspan=3>No placements yet. Share the student link above.</td></tr>";
+ $("pmtr").innerHTML=PM.trainers.map(function(t){return "<tr><td>"+esc(t.name)+"</td><td>"+esc(t.tel)+"</td><td><b>"+t.count+"</b></td></tr>"}).join("")||"<tr><td colspan=3>No trainers yet. The HOD adds them on the HOD link.</td></tr>";
+ $("phs").textContent=D.hodSet?"An access code is set. Type a new one only if you want to change it.":"No access code yet. Set one before you send the HOD link.";
+ drawPmList()}
+function drawPmList(){if(!PM)return;var q=$("pmq").value.trim().toUpperCase(),rows;
+ if(PDEPT&&q.length<2){rows=PM.placements.filter(function(p){return p.dept===PDEPT});$("pmh").textContent=PDEPT+": "+rows.length+" students."}
+ else if(q.length>=2){rows=PM.placements.filter(function(p){var t=trOf(p.tid);return (p.n+" "+p.a+" "+p.org+" "+p.town+" "+p.course+" "+(t?t.name:"")).toUpperCase().indexOf(q)>=0});$("pmh").textContent=rows.length+" found"+(rows.length>100?" (showing the first 100)":"")+"."}
+ else{$("pml2").innerHTML="";$("pmh").textContent="Type at least 2 letters, or tap a department above, to see students.";return}
+ $("pml2").innerHTML=rows.slice(0,100).map(function(p){var t=trOf(p.tid);return '<div class="course"><b>'+esc(p.n)+'</b> <span class="hint">'+esc(p.a)+'</span><div class="hint">'+esc(p.course)+'</div><div>'+esc(p.org)+', '+esc(p.town)+'</div><div class="hint">'+esc(p.loc)+' &middot; Supervisor: '+esc(p.sup)+' &middot; '+esc(p.tel1)+(p.tel2?' / '+esc(p.tel2):"")+'</div><p style="margin:6px 0">'+(t?'Trainer: <b>'+esc(t.name)+'</b> ('+esc(t.tel)+')':'<i>Waiting for a trainer</i>')+'</p><button class="btn del" data-pdx="'+p.id+'" style="min-height:32px;padding:3px 10px;font-size:13px">Remove</button></div>'}).join("")||'<p class="hint">No students found.</p>'}
+$("pmq").oninput=function(){if(this.value.trim().length>=2)PDEPT="";drawPmList()};
+$("pmd").onclick=function(e){var tr=e.target.closest("[data-pd]");if(!tr)return;PDEPT=tr.getAttribute("data-pd");$("pmq").value="";drawPmList();$("pmh").scrollIntoView({behavior:"smooth",block:"center"})};
+$("pml2").onclick=async function(e){var id=e.target.getAttribute("data-pdx");if(!id)return;if(!confirm("Remove this placement?"))return;
+ try{await call("DELETE","admin/placements/"+id);PM.placements=PM.placements.filter(function(p){return p.id!==id});drawPm()}catch(x){say("pmm","err",x.message)}};
+$("pmrf").onclick=loadPm;
+$("phk").onclick=async function(){say("pmm","");try{await call("POST","admin/hodcode",{code:$("phc").value});D.hodSet=true;$("phc").value="";drawPm();say("pmm","ok","Access code saved. Give the code to the HOD together with the HOD link.")}catch(e){say("pmm","err",e.message)}};
+function pmHead(){return ["Student name","Admission number","Department","Course","Organization","Where (landmark)","Town","Supervisor at organization","Phone 1","Phone 2","College trainer","Trainer phone"]}
+function pmRow(p){var t=trOf(p.tid)||{name:"",tel:""};return [p.n,p.a,p.dept,p.course,p.org,p.loc,p.town,p.sup,p.tel1,p.tel2||"",t.name,t.tel]}
+$("pmxl").onclick=function(){if(!PM||!PM.placements.length){say("pmm","err","Nothing to download yet.");return}
+ if(!window.XLSX){say("pmm","err","The spreadsheet tool did not load. Check your connection and try again.");return}
+ var P=PM.placements,by={},wb=XLSX.utils.book_new(),used={};P.forEach(function(p){(by[p.dept]=by[p.dept]||[]).push(p)});
+ var add=function(nm,aoa){nm=nm.replace(/[\\\/\?\*\[\]:]/g,"-").slice(0,28)||"Sheet";var k=nm,i=2;while(used[k])k=nm.slice(0,26)+"-"+i++;used[k]=1;var ws=XLSX.utils.aoa_to_sheet(aoa);ws["!cols"]=[30,20,28,34,28,36,14,24,14,14,24,14].map(function(x){return{wch:x}});XLSX.utils.book_append_sheet(wb,ws,k)};
+ var sum=[["Department","Placed","Assigned to a trainer"]].concat(Object.keys(by).sort().map(function(d){return [d,by[d].length,by[d].filter(function(p){return p.tid}).length]}));sum.push(["TOTAL",P.length,P.filter(function(p){return p.tid}).length]);sum.push([]);sum.push(["Trainer","Phone","Students"]);PM.trainers.forEach(function(t){sum.push([t.name,t.tel,t.count])});
+ add("Summary",sum);add("All placements",[pmHead()].concat(P.map(pmRow)));
+ Object.keys(by).sort().forEach(function(d){add(d,[pmHead()].concat(by[d].map(pmRow)))});
+ XLSX.writeFile(wb,"RVNP_placements.xlsx")};
+(function(){var o=location.origin,u1=o+"/placement.html",u2=o+"/hod.html";$("pml").value=u1;$("phl").value=u2;
+ $("pmwa").href="https://wa.me/?text="+encodeURIComponent("Secured an attachment place? Tell us where you are, and see your trainer, here: "+u1);
+ $("phwa").href="https://wa.me/?text="+encodeURIComponent("ILO: assign trainers to students here (you need the access code): "+u2);
+ var cp=function(id,u,m){$(id).onclick=function(){var ok=function(){say("pmm","ok",m)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,ok);else ok()}};
+ cp("pmcp",u1,"Student link copied.");cp("phcp",u2,"HOD link copied.")})();
 
 /* ILO link */
 (function(){var u=location.origin+"/ilo.html";$("il").value=u;
@@ -654,72 +615,6 @@ $("plc").onclick=function(){if(!PL||!PL.placements.length){say("plm","err","Ther
  $("cp").onclick=function(){var done=function(){say("ml","ok","Link copied.")};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(done,function(){$("sl").select();document.execCommand("copy");done()});
   else{$("sl").select();document.execCommand("copy");done()}}})();
-
-/* ---------- student marks (admin) ---------- */
-var MKC="",MKS=null,MKT=null;
-function copyTxt(t,id,done){var ok=function(){say(id,"ok",done)};var f=function(){var x=document.createElement("input");x.value=t;document.body.appendChild(x);x.select();document.execCommand("copy");x.remove();ok()};
- if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,f);else f()}
-function mkLink(){return location.origin+"/ilo.html#k="+MKC}
-async function loadMk(){say("mk-m1","");
- try{var d=await call("GET","admin/marks-info");MKC=d.code;drawLinks();$("mk-open").checked=d.open;$("mk-code").value=d.code;$("mk-link").value=mkLink();
-  $("mk-wa").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+d.code+"  "+mkLink());
-  $("mk-n1").textContent=d.students;$("mk-n2").textContent=d.entries;
-  $("mk-cl").innerHTML=d.classes.length?d.classes.map(function(c){return "<tr><td>"+esc(c.c)+"</td><td>"+c.students+"</td><td>"+c.entries+"</td></tr>"}).join(""):"<tr><td colspan=3>No marks entered yet.</td></tr>"}
- catch(e){say("mk-m1","err",e.message)}}
-$("mk-rf").onclick=loadMk;
-$("mk-open").onchange=async function(){var v=this.checked;try{await call("PUT","admin/marks-open",{open:v});say("mk-m1","ok",v?"Students can now view their marks.":"Marks are hidden from students.")}catch(e){this.checked=!v;say("mk-m1","err",e.message)}};
-$("mk-cc").onclick=function(){copyTxt(mkLink(),"mk-m2","Link copied.")};
-$("mk-cd").onclick=function(){copyTxt(MKC,"mk-m2","Code copied.")};
-$("mk-new").onclick=async function(){if(!confirm("Make a new access code? The old code and link stop working straight away, and ILO representatives will need the new one."))return;
- try{var d=await call("POST","admin/ilo-code");MKC=d.code;drawLinks();$("mk-code").value=d.code;$("mk-link").value=mkLink();$("mk-wa").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+d.code+"  "+mkLink());say("mk-m2","ok","New code made. Send it to the ILO representatives. The old one no longer works.")}catch(e){say("mk-m2","err",e.message)}};
-$("mk-q").addEventListener("input",function(){clearTimeout(MKT);var q=this.value.trim();say("mk-m3","");
- if(q.replace(/[^A-Za-z0-9]/g,"").length<3){$("mk-sg").innerHTML="";return}
- MKT=setTimeout(async function(){try{var d=await call("POST","ilo/marks-search",{q:q});if($("mk-q").value.trim()!==q)return;
-  $("mk-sg").innerHTML=d.matches.length?d.matches.map(function(m){return '<button class="btn sec" style="display:block;width:100%;text-align:left;margin-bottom:6px" data-ms="'+esc(m.id)+'" type="button">'+esc(m.n)+' <span class="hint">'+esc(m.a)+(m.c?" \u00b7 "+esc(m.c):"")+(m.k?" \u00b7 "+m.k+" marks":"")+'</span></button>'}).join(""):'<div class="hint">No student found.</div>'}
-  catch(e){say("mk-m3","err",e.message)}},300)});
-$("mk-sg").addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-ms]");if(b)showMk(b.getAttribute("data-ms"))});
-async function showMk(id){say("mk-m3","");
- try{var d=await call("GET","ilo/marks/"+encodeURIComponent(id));MKS=d;$("mk-sg").innerHTML="";$("mk-q").value="";$("mk-st").hidden=false;
-  $("mk-sn").textContent=d.student.n;$("mk-sa").textContent=d.student.a+(d.student.c?" \u00b7 "+d.student.c:"")+" \u00b7 "+(d.hasPin?"PIN created":"no PIN yet");drawMkRows()}
- catch(e){say("mk-m3","err",e.message)}}
-function drawMkRows(){var it=MKS.items;
- $("mk-tb").innerHTML=it.length?it.map(function(x){return "<tr><td>"+esc(x.assess)+"</td><td>"+esc(x.unit)+'<div class="hint">by '+esc(x.by||"")+"</div></td><td>"+x.score+" / "+x.out+'</td><td><button class="btn del" data-md="'+esc(x.id)+'" type="button">Delete</button></td></tr>'}).join(""):"<tr><td colspan=4>No marks entered for this student.</td></tr>"}
-$("mk-tb").addEventListener("click",async function(e){var id=e.target.getAttribute&&e.target.getAttribute("data-md");if(!id)return;if(!confirm("Delete this mark?"))return;
- try{var d=await call("DELETE","ilo/marks/"+encodeURIComponent(MKS.student.id)+"/"+encodeURIComponent(id));MKS.items=d.items;drawMkRows();say("mk-m3","ok","Mark deleted.")}catch(er){say("mk-m3","err",er.message)}});
-$("mk-rp").onclick=async function(){if(!MKS)return;if(!confirm("Reset the PIN for "+MKS.student.n+"? They will create a new one using their registered phone number."))return;
- try{await call("POST","admin/pin-reset",{id:MKS.student.id});$("mk-sa").textContent=MKS.student.a+" \u00b7 no PIN yet";say("mk-m3","ok","PIN reset. The student can create a new PIN now.")}catch(e){say("mk-m3","err",e.message)}};
-
-/* ---------- official notices ---------- */
-var NTL=[],NTADM=false,AUDN={all:"Everyone",students:"Students only",reps:"ILO reps only"};
-function ntDate(t){return new Date(t).toLocaleString([],{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}
-function ntDraw(){
- var box=$("nt-l");
- if(!NTL.length){box.innerHTML='<div class="hint">No notices posted yet.</div>';return}
- box.innerHTML=NTL.map(function(x){var can=NTADM||x.role!=="admin";
-  return '<div style="border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:10px'+(x.imp?';border-color:var(--er)':'')+'"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>'+esc(x.title)+'</b><span class="hint">'+esc(AUDN[x.aud]||x.aud)+(x.imp?' \u00b7 important':'')+'</span></div><div class="hint" style="margin:2px 0 8px">'+esc(x.from)+' \u00b7 '+ntDate(x.t)+'</div><div style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(x.body)+'</div>'+(can?'<div style="margin-top:10px"><button class="btn del sm" data-nd="'+esc(x.id)+'" type="button">Delete</button></div>':'')+'</div>'}).join("")}
-async function ntLoad(){say("nt-m","");try{var d=await call("GET","hod/notices");NTL=d.notices;NTADM=!!d.admin;ntDraw()}catch(e){say("nt-m","err",e.message)}}
-$("nt-r").onclick=ntLoad;
-$("nt-p").onclick=async function(){
- var b=this;say("nt-m","");
- if($("nt-t").value.trim().length<3){say("nt-m","err","Enter a title.");return}
- if($("nt-b").value.trim().length<3){say("nt-m","err","Write the message.");return}
- b.disabled=true;
- try{var d=await call("POST","hod/notices",{title:$("nt-t").value,body:$("nt-b").value,aud:$("nt-a").value,imp:$("nt-i").checked,from:$("nt-f").value});
-  NTL=d.notices;NTADM=!!d.admin;ntDraw();$("nt-t").value="";$("nt-b").value="";$("nt-i").checked=false;
-  say("nt-m","ok","Notice posted. It is on the "+({all:"student and ILO representative",students:"student",reps:"ILO representative"}[$("nt-a").value])+" pages now.")}
- catch(e){say("nt-m","err",e.message)}
- b.disabled=false};
-$("nt-l").addEventListener("click",async function(e){var id=e.target&&e.target.getAttribute&&e.target.getAttribute("data-nd");if(!id)return;
- if(!confirm("Delete this notice? It disappears for everyone."))return;
- try{var d=await call("DELETE","hod/notices/"+encodeURIComponent(id));NTL=d.notices;ntDraw();say("nt-m","ok","Notice deleted.")}catch(er){say("nt-m","err",er.message)}});
-
-/* ---------- links card (always visible at the top) ---------- */
-function drawLinks(){
- if(HK){var u=hodUrl();$("lk-h").value=u;$("lk-hw").href="https://wa.me/?text="+encodeURIComponent("ILO HOD / Deputy HOD: open this link to assign trainers to placed students and post notices. Keep it private: "+u);$("lk-ho").href=u}
- if(MKC){var r=mkLink();$("lk-r").value=r;$("lk-c").textContent=MKC;$("lk-rw").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+MKC+"  "+r)}}
-async function loadLinks(){try{var k=await call("GET","admin/hod-link");HK=k.key;var m=await call("GET","admin/marks-info");MKC=m.code;drawLinks()}catch(e){say("lk-m","err","Could not load the links. Refresh the page.")}}
-$("lk-hc").onclick=function(){if(HK)copyTxt(hodUrl(),"lk-m","HOD link copied.")};
-$("lk-rc").onclick=function(){if(MKC)copyTxt(mkLink(),"lk-m","ILO representatives link copied.")};
-$("lk-cc").onclick=function(){if(MKC)copyTxt(MKC,"lk-m","Access code copied.")};
 </script>
+<script src="/marks.js"></script><script src="/pwa.js" defer></script>
 </body></html>
