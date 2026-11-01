@@ -84,6 +84,19 @@ input,select,textarea,button{max-width:100%}
 <div class="row"><button class="btn" id="icp">Copy link</button><a class="btn sec" id="iwa" target="_blank" rel="noopener">Share on WhatsApp</a></div>
 <div class="msg" id="mi"></div>
 </div>
+<div class="card" id="lk-card">
+<h2>Links for the HOD, Deputy HOD and ILO representatives</h2>
+<p class="lead">Send each link only to the people it is for. The HOD and Deputy HOD use the same link: it lets them assign trainers and post notices. The ILO representatives link signs them in with the access code so they can enter marks.</p>
+<label for="lk-h">ILO HOD / Deputy HOD link</label>
+<input id="lk-h" readonly onclick="this.select()" placeholder="Loading...">
+<div class="row"><button class="btn" id="lk-hc" type="button">Copy link</button><a class="btn sec" id="lk-hw" target="_blank" rel="noopener">Share on WhatsApp</a><a class="btn sec" id="lk-ho" target="_blank" rel="noopener">Open HOD page</a></div>
+<label for="lk-r" style="margin-top:16px">ILO representatives link (student marks and notices, includes the access code)</label>
+<input id="lk-r" readonly onclick="this.select()" placeholder="Loading...">
+<div class="hint">Access code: <b id="lk-c"></b></div>
+<div class="row"><button class="btn" id="lk-rc" type="button">Copy link</button><button class="btn sec" id="lk-cc" type="button">Copy code</button><a class="btn sec" id="lk-rw" target="_blank" rel="noopener">Share on WhatsApp</a></div>
+<div class="hint" style="margin-top:8px">To replace a link that reached the wrong person: HOD link, Placements tab, <b>Make a new link</b>. ILO code, Student marks tab, <b>Make a new code</b>.</div>
+<div class="msg" id="lk-m"></div>
+</div>
 
 
 <div class="tabs" role="tablist">
@@ -362,7 +375,7 @@ $("out").onclick=signOut;
 async function start(){
  D=await call("GET","admin/data");$("login").hidden=true;$("app").hidden=false;
  var s=D.settings;$("pn").value=s.policyNumber;$("pi").value=s.insurer;$("ps").value=s.policyStart;$("pe").value=s.policyEnd;$("pd").value=s.issueDate;
- fillDepts();drawStudents();drawCourses();drawReqs();drawIlo();drawNita();loadReg()}
+ fillDepts();drawStudents();drawCourses();drawReqs();drawIlo();drawNita();loadReg();loadLinks()}
 if(TOKEN)start().catch(function(){signOut()});
 
 /* tabs */
@@ -599,7 +612,7 @@ function hodUrl(){return location.origin+"/hod.html#k="+HK}
 async function loadPl(){say("plm","");try{
  var d=await call("GET","hod/data"),k=await call("GET","admin/hod-link");PL=d;HK=k.key;drawPl()}catch(e){say("plm","err",e.message)}}
 function plTrainer(p){return PL.trainers.find(function(t){return t.id===p.tid})}
-function drawPl(){if(!PL)return;var P=PL.placements,T=PL.trainers;
+function drawPl(){drawLinks();if(!PL)return;var P=PL.placements,T=PL.trainers;
  var done=P.filter(function(p){return plTrainer(p)}).length;
  $("plcnt").textContent=P.length;$("pl1").textContent=P.length;$("pl2").textContent=done;$("pl3").textContent=P.length-done;
  var u=hodUrl();$("hl").value=u;$("hop").href=u;
@@ -648,7 +661,7 @@ function copyTxt(t,id,done){var ok=function(){say(id,"ok",done)};var f=function(
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,f);else f()}
 function mkLink(){return location.origin+"/ilo.html#k="+MKC}
 async function loadMk(){say("mk-m1","");
- try{var d=await call("GET","admin/marks-info");MKC=d.code;$("mk-open").checked=d.open;$("mk-code").value=d.code;$("mk-link").value=mkLink();
+ try{var d=await call("GET","admin/marks-info");MKC=d.code;drawLinks();$("mk-open").checked=d.open;$("mk-code").value=d.code;$("mk-link").value=mkLink();
   $("mk-wa").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+d.code+"  "+mkLink());
   $("mk-n1").textContent=d.students;$("mk-n2").textContent=d.entries;
   $("mk-cl").innerHTML=d.classes.length?d.classes.map(function(c){return "<tr><td>"+esc(c.c)+"</td><td>"+c.students+"</td><td>"+c.entries+"</td></tr>"}).join(""):"<tr><td colspan=3>No marks entered yet.</td></tr>"}
@@ -658,7 +671,7 @@ $("mk-open").onchange=async function(){var v=this.checked;try{await call("PUT","
 $("mk-cc").onclick=function(){copyTxt(mkLink(),"mk-m2","Link copied.")};
 $("mk-cd").onclick=function(){copyTxt(MKC,"mk-m2","Code copied.")};
 $("mk-new").onclick=async function(){if(!confirm("Make a new access code? The old code and link stop working straight away, and ILO representatives will need the new one."))return;
- try{var d=await call("POST","admin/ilo-code");MKC=d.code;$("mk-code").value=d.code;$("mk-link").value=mkLink();$("mk-wa").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+d.code+"  "+mkLink());say("mk-m2","ok","New code made. Send it to the ILO representatives. The old one no longer works.")}catch(e){say("mk-m2","err",e.message)}};
+ try{var d=await call("POST","admin/ilo-code");MKC=d.code;drawLinks();$("mk-code").value=d.code;$("mk-link").value=mkLink();$("mk-wa").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+d.code+"  "+mkLink());say("mk-m2","ok","New code made. Send it to the ILO representatives. The old one no longer works.")}catch(e){say("mk-m2","err",e.message)}};
 $("mk-q").addEventListener("input",function(){clearTimeout(MKT);var q=this.value.trim();say("mk-m3","");
  if(q.replace(/[^A-Za-z0-9]/g,"").length<3){$("mk-sg").innerHTML="";return}
  MKT=setTimeout(async function(){try{var d=await call("POST","ilo/marks-search",{q:q});if($("mk-q").value.trim()!==q)return;
@@ -699,5 +712,14 @@ $("nt-p").onclick=async function(){
 $("nt-l").addEventListener("click",async function(e){var id=e.target&&e.target.getAttribute&&e.target.getAttribute("data-nd");if(!id)return;
  if(!confirm("Delete this notice? It disappears for everyone."))return;
  try{var d=await call("DELETE","hod/notices/"+encodeURIComponent(id));NTL=d.notices;ntDraw();say("nt-m","ok","Notice deleted.")}catch(er){say("nt-m","err",er.message)}});
+
+/* ---------- links card (always visible at the top) ---------- */
+function drawLinks(){
+ if(HK){var u=hodUrl();$("lk-h").value=u;$("lk-hw").href="https://wa.me/?text="+encodeURIComponent("ILO HOD / Deputy HOD: open this link to assign trainers to placed students and post notices. Keep it private: "+u);$("lk-ho").href=u}
+ if(MKC){var r=mkLink();$("lk-r").value=r;$("lk-c").textContent=MKC;$("lk-rw").href="https://wa.me/?text="+encodeURIComponent("ILO representatives: open this link to enter student marks and read notices. Access code: "+MKC+"  "+r)}}
+async function loadLinks(){try{var k=await call("GET","admin/hod-link");HK=k.key;var m=await call("GET","admin/marks-info");MKC=m.code;drawLinks()}catch(e){say("lk-m","err","Could not load the links. Refresh the page.")}}
+$("lk-hc").onclick=function(){if(HK)copyTxt(hodUrl(),"lk-m","HOD link copied.")};
+$("lk-rc").onclick=function(){if(MKC)copyTxt(mkLink(),"lk-m","ILO representatives link copied.")};
+$("lk-cc").onclick=function(){if(MKC)copyTxt(MKC,"lk-m","Access code copied.")};
 </script>
 </body></html>

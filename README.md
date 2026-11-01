@@ -17,6 +17,15 @@ The admin manages courses, insurance policy details, student lists and cover req
 | letterhead.png, signature.png, iso.png | Images printed on the letter |
 | cover_bg.jpg, cover_font.ttf | Background and font for the insurance cover |
 
+## Links to send (admin page)
+
+On the admin page, right under the student link and the ILO units link, the card **Links for the HOD, Deputy HOD and ILO representatives** shows:
+
+- **ILO HOD / Deputy HOD link** (`your-site/hod.html#k=...`). The HOD and Deputy HOD both use this one link. Copy it or share it on WhatsApp.
+- **ILO representatives link** with the access code included, for marks and notices.
+
+The same links are also in the **Placements** tab (HOD link) and the **Student marks** tab (ILO link and code), where you can make new ones.
+
 ## Put the files on GitHub (do this first)
 
 1. Unzip MKLETTERS_Portal_Flat.zip. Open the folder and check the 14 files are directly inside.
