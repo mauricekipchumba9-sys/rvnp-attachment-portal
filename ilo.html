@@ -159,10 +159,10 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <script>
 var USER_TOKEN=sessionStorage.getItem("rvnp_user");
 if(!USER_TOKEN){location.replace("/auth.html?role=staff");throw new Error("Staff sign-in required");}
-var _fetch=window.fetch;window.fetch=function(url,opt){opt=opt||{};if(String(url).indexOf("/.netlify/functions/api/")===0){opt.headers=Object.assign({"Authorization":"Bearer "+USER_TOKEN},opt.headers||{})}return _fetch(url,opt)};
+var _fetch=window.fetch;window.fetch=function(url,opt){opt=opt||{};if(String(url).indexOf("/api/")===0){opt.headers=Object.assign({"Authorization":"Bearer "+USER_TOKEN},opt.headers||{})}return _fetch(url,opt)};
 var $=function(i){return document.getElementById(i)},ALL=[];
 function say(c,t){var m=$("m");m.className="msg"+(c?" "+c:"");m.textContent=t||""}
-fetch("/.netlify/functions/api/courses").then(function(r){return r.json()}).then(function(d){ALL=d.courses||[];
+fetch("/api/courses").then(function(r){return r.json()}).then(function(d){ALL=d.courses||[];
  (d.departments||[]).forEach(function(n){if(ALL.some(function(c){return c.dept===n})||n!=="Other courses"){var o=document.createElement("option");o.value=n;o.textContent=n;$("dp").appendChild(o)}})}).catch(function(){say("err","Could not load the courses. Check your connection and refresh.")});
 $("dp").addEventListener("change",function(){var dp=this.value,sel=$("co");sel.textContent="";
  var o0=document.createElement("option");o0.value="";o0.textContent=dp?"Select the course":"Select your department first";sel.appendChild(o0);
@@ -180,7 +180,7 @@ $("go").addEventListener("click",async function(){say("");var k=$("co").value,b=
  if(!$("cu").value.trim()){say("err","Add the units covered, one per line.");return}
  if($("rn").value.trim().length<3){say("err","Enter your name.");return}
  b.disabled=true;
- try{var r=await fetch("/.netlify/functions/api/ilo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:k==="__new"?"":k,newTitle:$("nt").value,dept:$("dp").value,percent:$("cp").value,units:$("cu").value.split("\n"),rep:$("rn").value,phone:$("rp").value})});
+ try{var r=await fetch("/api/ilo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:k==="__new"?"":k,newTitle:$("nt").value,dept:$("dp").value,percent:$("cp").value,units:$("cu").value.split("\n"),rep:$("rn").value,phone:$("rp").value})});
   var d=await r.json();if(!r.ok)say("err",d.error||"Something went wrong.");
   else{say("ok","Thank you. Your units were sent to the Industrial Liaison Office for approval. You can send another course.");$("co").value="";pick()}}
  catch(e){say("err","Could not send. Check your connection and try again.")}
@@ -191,7 +191,7 @@ var CL=[],POLS=[],DEF=null;
 function say2(c,t){var m=$("m2");m.className="msg"+(c?" "+c:"");m.textContent=t||""}
 function dmy(i){var p=String(i).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:i}
 function desc(x){return x.policyNumber+", "+dmy(x.policyStart)+" - "+dmy(x.policyEnd)}
-fetch("/.netlify/functions/api/ilo-info").then(function(r){return r.json()}).then(function(d){CL=d.classes||[];POLS=d.policies||[];DEF=d.def;
+fetch("/api/ilo-info").then(function(r){return r.json()}).then(function(d){CL=d.classes||[];POLS=d.policies||[];DEF=d.def;
  var k=$("kc");CL.forEach(function(c){var o=document.createElement("option");o.value=c.c;var cur=POLS.find(function(p){return p.id===c.pid});o.textContent=c.c+" ("+c.n+" students"+(cur?", now: "+cur.name:"")+")";k.appendChild(o)});
  var o=document.createElement("option");o.value="__other";o.textContent="My class is not listed";k.appendChild(o);
  var kp=$("kp");kp.innerHTML="";
@@ -207,7 +207,7 @@ $("go2").addEventListener("click",async function(){say2("");var b=this,k=$("kc")
  if(ch==="new"&&(!$("kpn").value.trim()||!$("kpi").value.trim()||!$("kps").value||!$("kpe").value||!$("kpd").value)){say2("err","Fill in the policy number, insurer and the three dates.");return}
  if($("kr").value.trim().length<3){say2("err","Enter your name.");return}
  b.disabled=true;
- try{var r=await fetch("/.netlify/functions/api/ilo-policy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:cls,choice:ch,np:{policyNumber:$("kpn").value,insurer:$("kpi").value,policyStart:$("kps").value,policyEnd:$("kpe").value,issueDate:$("kpd").value},rep:$("kr").value,phone:$("kt").value})});
+ try{var r=await fetch("/api/ilo-policy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:cls,choice:ch,np:{policyNumber:$("kpn").value,insurer:$("kpi").value,policyStart:$("kps").value,policyEnd:$("kpe").value,issueDate:$("kpd").value},rep:$("kr").value,phone:$("kt").value})});
   var d=await r.json();if(!r.ok)say2("err",d.error||"Something went wrong.");else{say2("ok","Thank you. The insurance policy for "+cls+" was sent to the Industrial Liaison Office for approval.");$("kc").value="";$("kcw").hidden=true;$("kp").value="";$("knw").hidden=true;$("kph").textContent=""}}
  catch(e){say2("err","Could not send. Check your connection and try again.")}
  b.disabled=false});
@@ -219,19 +219,19 @@ function drawIR(){
  var box=$("irt");
  if(!IR.length){box.innerHTML='<p class="hint">No waiting insurance requests for your department.</p>';return}
  box.innerHTML='<div class="scroll"><table style="width:100%"><thead><tr><th>Student</th><th>Admission</th><th>Class</th><th>Course</th><th>Action</th></tr></thead><tbody>'+IR.map(function(r){return '<tr><td>'+esc(r.n)+'</td><td>'+esc(r.a)+'</td><td>'+esc(r.c)+'</td><td>'+esc(r.course)+'</td><td><button class="btn" data-ira="'+esc(r.id)+'" style="min-height:36px;padding:5px 10px">Approve</button></td></tr>'}).join('')+'</tbody></table></div>' ;
- box.querySelectorAll('[data-ira]').forEach(function(b){b.onclick=async function(){b.disabled=true;try{var r=await fetch('/.netlify/functions/api/ilo/requests/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.getAttribute('data-ira')})});var d=await r.json();if(!r.ok)throw new Error(d.error||'Could not approve request.');sayIR('ok','Insurance request approved.');loadIR();}catch(e){sayIR('err',e.message);b.disabled=false}}});
+ box.querySelectorAll('[data-ira]').forEach(function(b){b.onclick=async function(){b.disabled=true;try{var r=await fetch('/api/ilo/requests/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.getAttribute('data-ira')})});var d=await r.json();if(!r.ok)throw new Error(d.error||'Could not approve request.');sayIR('ok','Insurance request approved.');loadIR();}catch(e){sayIR('err',e.message);b.disabled=false}}});
 }
-async function loadIR(){try{sayIR('','Loading...');var r=await fetch('/.netlify/functions/api/ilo/requests');var d=await r.json();if(!r.ok)throw new Error(d.error||'Could not load requests.');IR=d.requests||[];drawIR();if(!IR.length)sayIR('','')}catch(e){sayIR('err',e.message)}}
+async function loadIR(){try{sayIR('','Loading...');var r=await fetch('/api/ilo/requests');var d=await r.json();if(!r.ok)throw new Error(d.error||'Could not load requests.');IR=d.requests||[];drawIR();if(!IR.length)sayIR('','')}catch(e){sayIR('err',e.message)}}
 $("irf").onclick=loadIR; loadIR();
 
 /* ---------- link for students to fill their details ---------- */
-(function(){var u=location.origin+"/register.html";$("rl").value=u;
+(function(){if(!$("rl")||!$("rwa")||!$("rcp"))return;var u=location.origin+"/register.html";$("rl").value=u;
  $("rwa").href="https://wa.me/?text="+encodeURIComponent("Please fill in your student details here (name, admission number, class, contact number): "+u);
  $("rcp").onclick=function(){var ok=function(){var m=$("m3");m.className="msg ok";m.textContent="Link copied."};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,function(){$("rl").select();document.execCommand("copy");ok()});
   else{$("rl").select();document.execCommand("copy");ok()}}})();
 /* ---------- student marks (department code) ---------- */
-(function(){fetch("/.netlify/functions/api/courses").then(function(r){return r.json()}).then(function(d){(d.departments||[]).forEach(function(n){var o=document.createElement("option");o.value=n;o.textContent=n;$("md").appendChild(o)})}).catch(function(){});
+(function(){fetch("/api/courses").then(function(r){return r.json()}).then(function(d){(d.departments||[]).forEach(function(n){var o=document.createElement("option");o.value=n;o.textContent=n;if($("md"))$("md").appendChild(o)})}).catch(function(){});
  var mk=null;
  $("mgo").onclick=function(){
   $("mkgate").hidden=true;

@@ -1,7 +1,7 @@
 /* RVNP portal service worker: lets the portal install as an app and open quickly.
    Pages are always fetched fresh when online, and kept for when the connection drops.
    Data (/api) is never stored. Bump VERSION when you change this file. */
-var VERSION = "rvnp-v8";
+var VERSION = "rvnp-v11";
 var SHELL = ["/", "/index.html", "/student.html", "/placement.html", "/register.html", "/ilo.html", "/hod.html", "/marks.js", "/manifest-ilo.webmanifest", "/manifest-hod.webmanifest", "/icon-192.png", "/icon-512.png", "/manifest.webmanifest"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(SHELL).catch(function () {}); }).then(function () { return self.skipWaiting(); }));

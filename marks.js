@@ -116,7 +116,7 @@
     function say(c, t) { msg.className = "msg" + (c ? " " + c : ""); msg.textContent = t || ""; }
     async function call(method, path, b) {
       var h = Object.assign({ "Content-Type": "application/json" }, o.headers ? o.headers() : {});
-      var r = await fetch("/.netlify/functions/api/" + path, { method: method, headers: h, body: JSON.stringify(Object.assign({}, b || {}, o.role === "rep" ? { dept: o.dept } : {})) });
+      var r = await fetch("/api/" + path, { method: method, headers: h, body: JSON.stringify(Object.assign({}, b || {}, o.role === "rep" ? { dept: o.dept } : {})) });
       var d = await r.json().catch(function () { return {}; });
       if (!r.ok) { var e = new Error(d.error || "Something went wrong."); e.status = r.status; throw e; }
       return d;
@@ -154,10 +154,6 @@
       if (canAll) {
         h += '<div class="reqbox" data-cdbox hidden><b data-cdt></b><div class="grid" style="margin-top:8px"><div class="full"><select data-cd><option value="">Work it out from placements</option>' + D.departments.filter(function (d) { return d !== "Not yet assigned"; }).map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("") + '</select></div></div><div class="actions"><button class="btn" data-cds>Save department</button></div></div>';
       }
-      if (role === "admin") {
-        h += '<div class="reqbox"><b>Department codes for ILO representatives</b><div class="hint" style="margin-bottom:8px">Each representative opens the ILO page, picks the department and types its code. Leave the code empty and save to remove it.</div><div class="grid"><div><select data-kd>' +
-          D.departments.filter(function (d) { return d !== "Not yet assigned"; }).map(function (d) { return "<option>" + esc(d) + (D.codes && D.codes.indexOf(d) >= 0 ? " (code set)" : "") + "</option>"; }).join("") + '</select></div><div><input data-kc placeholder="New code (6+ characters)" autocomplete="off"></div></div><div class="actions"><button class="btn sec" data-ks>Save code</button></div></div>';
-      }
       body.innerHTML = h; wire();
     }
     function pick() {
@@ -186,10 +182,6 @@
         var box = body.querySelector("[data-cdbox]");
         try { D = await call("POST", "marks/classdept", { c: box.getAttribute("data-c"), dept: box.querySelector("[data-cd]").value }); render(); say("ok", "Saved."); } catch (e) { fail(e); }
       };
-      var ks = body.querySelector("[data-ks]");
-      if (ks) ks.onclick = async function () {
-        try { D = await call("POST", "marks/ilocode", { dept: body.querySelector("[data-kd]").value.replace(" (code set)", ""), code: body.querySelector("[data-kc]").value }); render(); say("ok", "Code saved."); } catch (e) { fail(e); }
-      };
       function editor(list, title) {
         var box = body.querySelector("[data-edbox]");
         if (!list.length) { box.innerHTML = '<div class="hint">No students found.</div>'; return; }
@@ -211,7 +203,7 @@
           try { say("", "Saving..."); var res = await call("POST", "marks/upload", { rows: rows }); D = res; var q = (body.querySelector("[data-eq]") || {}).value; render(); say(res.invalidCount ? "err" : "ok", "Saved " + res.saved + " marks" + (res.cleared ? ", removed " + res.cleared : "") + "." + (res.invalidCount ? " " + res.invalidCount + " were not saved: marks must be a number not above the total." : "")); } catch (e) { fail(e); }
         };
       }
-      body.querySelector("[data-ed]").onclick = function () {
+      var edBtn = body.querySelector("[data-ed]") || {}; edBtn.onclick = function () {
         var cv = (body.querySelector("[data-c]") || {}).value;
         if (!cv) return say("err", "Choose a class in the Class box first, or search for a student below.");
         var g = inScope().filter(function (x) { return x.c === cv; })[0]; if (!g) return;
@@ -225,8 +217,8 @@
         inScope().forEach(function (g) { g.students.forEach(function (x) { var hay = (x.n + " " + x.a).toUpperCase().replace(/[^A-Z0-9\s]/g, " "); if (q.every(function (w) { return hay.indexOf(w) >= 0; })) found.push({ x: x, c: g.c }); }); });
         say("", ""); editor(found.slice(0, 25), found.length > 25 ? "First 25 of " + found.length + " students found. Type more to narrow." : found.length + " student(s) found");
       }
-      body.querySelector("[data-es0]").onclick = doSearch;
-      eq.onkeydown = function (e) { if (e.key === "Enter") { e.preventDefault(); doSearch(); } };
+      (body.querySelector("[data-es0]") || {}).onclick = doSearch;
+      if (eq) eq.onkeydown = function (e) { if (e.key === "Enter") { e.preventDefault(); doSearch(); } };
 
       var msb = body.querySelector("[data-ms]"), msx = body.querySelector("[data-msbox]");
       async function drawTemplates(list) {

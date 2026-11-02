@@ -16,7 +16,7 @@ The portal includes a unified responsive visual theme using RVNP navy, green and
 | admin.html | Admin page (open at `your-site/admin.html`) |
 | register.html | Page where students fill in their name, admission number, class and contact number (`your-site/register.html`) |
 | placement.html | Students tell the college where they were placed and see their trainer (`your-site/placement.html`) |
-| hod.html | ILO HOD / deputy HOD page for adding trainers and assigning students (`your-site/hod.html`, needs the access code) |
+| hod.html | ILO HOD / deputy HOD page for adding trainers and assigning students (`your-site/hod.html`, needs an approved HOD / Deputy HOD account) |
 | marks.js | Marks panel (view, upload, download) used on the admin, HOD and ILO pages |
 | manifest.webmanifest, manifest-ilo.webmanifest, manifest-hod.webmanifest, sw.js, pwa.js, icon-192.png, icon-512.png, icon-maskable.png, apple-touch-icon.png | Make the portal installable as an app |
 | ilo.html | Page for ILO representatives of departments (open at `your-site/ilo.html`) |
@@ -150,7 +150,7 @@ If you ever change sw.js, change the `VERSION` line at the top of it so phones r
 ## Placements and trainers
 
 1. **Students** open the **Attachment placement** card on the portal (or `your-site/placement.html`) once they have a place. They enter name, admission number, department, course, two phone numbers, the organization with a description of where it is (road and landmark, "near ..."), their supervisor at the organization, and the town. Submitting again with the same name and admission number corrects the entry.
-2. **Admin page, Placements tab:** set the **HOD access code** (at least 6 characters), copy the **HOD link** (`your-site/hod.html`) and send it, with the code, to the ILO HOD / deputy HOD. The tab also shows how many students are placed and assigned, per department and per trainer, and downloads everything as Excel (summary, all placements with the trainer, one sheet per department).
+2. **Admin page, Placements tab:** (the HOD access code is no longer used; HODs sign in with their approved account)  Old text: set the **HOD access code** (at least 6 characters), copy the **HOD link** (`your-site/hod.html`) and send it, with the code, to the ILO HOD / deputy HOD. The tab also shows how many students are placed and assigned, per department and per trainer, and downloads everything as Excel (summary, all placements with the trainer, one sheet per department).
 3. **The HOD** opens the link, types the code, and:
    - adds trainers (name and phone number),
    - filters students by department, town, or "waiting for a trainer", ticks the students (or **Select all shown**), chooses a trainer and presses **Assign**,
@@ -182,11 +182,11 @@ Green and white theme with orange accents (title underline, counters, selected t
 | Who | See | Download | Upload marks |
 |---|---|---|---|
 | ILO representative | Only their own department | One class, or the whole department | Yes, own department only |
-| HOD / deputy HOD (access code) | All departments | One class, a department, or everything | Yes |
+| HOD / deputy HOD (approved account) | All departments | One class, a department, or everything | Yes |
 | Admin | All departments | One class, a department, or everything | Yes |
 
 **Setting it up (admin page, Marks tab)**
-1. **Department codes**: pick a department, type a code (6+ characters), Save. Give each ILO representative the code for their department only. One code opens one department.
+1. **Accounts**: staff register on the sign-in page; approve them in the admin page, Accounts tab. An ILO representative only ever sees the department on their own account.
 2. **Upload marks**: Excel or CSV with columns **Admission number**, **Marks**, and optionally **Out of** (default 100). Students are matched by admission number. Uploading again updates marks already saved. Rows that do not match anyone, or have marks above the total, are reported and skipped.
 3. **Class to department**: the system works out each class's department from the placements its students filled in. A class with no placements shows "Not yet assigned". Press **Change** next to the class to set its department.
 
@@ -236,4 +236,4 @@ The portal uses a balanced green, orange and white palette: green remains the in
 
 ## If sign-in shows "Unexpected end of JSON input" or "Unexpected response"
 
-This means the server function (`api.mjs`) is not running on Netlify. Keep `api.mjs` and `netlify.toml` at the top level of the repository (there is no build step and no `netlify/functions` folder). In Netlify open **Site configuration, Build and deploy**, clear the **Build command** and **Functions directory** if they are filled in, and check **Environment variables** has `ADMIN_PASSWORD`. Then **Deploys, Trigger deploy, Clear cache and deploy site**. Open `your-site/.netlify/functions/api/auth-info`: it should show a list of departments. If it shows "Page not found", the function was not deployed; check **Functions** in the Netlify menu for one named `api`.
+This means the server function (`api.mjs`) is not running on Netlify. Keep `api.mjs` and `netlify.toml` at the top level of the repository (there is no build step and no `netlify/functions` folder). In Netlify open **Site configuration, Build and deploy**, clear the **Build command** and **Functions directory** if they are filled in, and check **Environment variables** has `ADMIN_PASSWORD`. Then **Deploys, Trigger deploy, Clear cache and deploy site**. Open `your-site/api/auth-info`: it should show a list of departments. If it shows "Page not found", the function was not deployed; check **Functions** in the Netlify menu for one named `api`.

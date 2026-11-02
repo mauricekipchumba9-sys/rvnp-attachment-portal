@@ -1,1 +1,1 @@
-/api/*  /.netlify/functions/api/:splat  200
+# Not used. The server answers directly at /api/ (see api.mjs).

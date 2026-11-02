@@ -549,6 +549,7 @@ export default async (req) => {
       const students = await getJSON(s, "students", {}), reg = await getJSON(s, "register", {});
       const placements = await getJSON(s, "placements", {}), marks = await getJSON(s, "marks", {});
       const cdept = await getJSON(s, "classdept", {});
+      const codes = await getJSON(s, "ilocodes", {});
       /* everyone in the database (cover list + student details), once each */
       const people = new Map();
       for (const [id, r] of Object.entries(reg)) people.set(id, { id, n: r.n, a: r.a, c: r.c || "" });
