@@ -104,8 +104,13 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 <p id="who" style="font-weight:700;color:var(--ac)"></p>
 <p>Rift Valley National Polytechnic. Access your industrial attachment letter, insurance cover and placement services.</p>
 </header>
-<div class="rolebar"><div class="role-id"><div class="role-icon">S</div><div><strong>STUDENT</strong><small>Student Dashboard</small></div></div><div class="role-actions"><a class="current" href="/student.html">Dashboard</a><a href="/placement.html">Placement</a><button type="button" onclick="sessionStorage.removeItem('rvnp_user');location.href='/auth.html'">Sign out</button></div></div>
+<div class="rolebar"><div class="role-id"><div class="role-icon">S</div><div><strong>STUDENT</strong><small>Student Dashboard</small></div></div><div class="role-actions"><a class="current" href="/student.html">Dashboard</a><a href="/placement.html">Placement</a><button type="button" onclick="sessionStorage.removeItem('rvnp_user');localStorage.removeItem('rvnp_student');location.href='/auth.html?role=student'">Sign out</button></div></div>
 <div class="dashboard-subtitle">Manage placement, insurance, trainer and attachment information.</div>
+
+<section class="panel" id="mine" hidden style="margin-bottom:16px">
+<h2>Your attachment</h2>
+<div id="mineBody"></div>
+</section>
 
 <div class="tiles" role="tablist" aria-label="Choose a document">
 <button class="tile" id="tl-letter" role="tab" aria-selected="true" aria-controls="p-letter" type="button">
@@ -217,7 +222,7 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 var C={};
 var SETTINGS={policyNumber:"",insurer:"",policyStart:"2000-01-01",policyEnd:"2000-01-01",issueDate:"2000-01-01"};
 var COVER_BG="cover_bg.jpg";
-var USER_TOKEN=sessionStorage.getItem("rvnp_user");
+var USER_TOKEN=sessionStorage.getItem("rvnp_user")||localStorage.getItem("rvnp_student");
 try{var up=JSON.parse(atob(USER_TOKEN.split(".")[0].replace(/-/g,"+").replace(/_/g,"/")));document.getElementById("who").textContent="Signed in securely";}catch(e){}
 if(!USER_TOKEN){location.replace("/auth.html?role=student");throw new Error("Student sign-in required");}
 function api(path,opt){opt=opt||{};opt.headers=Object.assign({"Authorization":"Bearer "+USER_TOKEN},opt.headers||{});return fetch("/.netlify/functions/api/"+path,opt).then(function(r){return r.json()})}
@@ -296,6 +301,17 @@ function check(){
 ["co","pr","ln","la","lt","le"].forEach(function(i){$(i).addEventListener("input",function(){render();if(i==="ln"||i==="la")check()});$(i).addEventListener("change",render)});
 render();
 loadMarks();
+/* the trainer appears here by itself as soon as the HOD assigns one */
+function loadMine(){api("placement-me").then(function(d){
+ if(!d||d.error||!d.hasPlacement){$("mine").hidden=true;return}
+ var p=d.placement||{},box=$("mineBody");$("mine").hidden=false;box.textContent="";
+ var a=document.createElement("b");a.style.display="block";a.textContent=(p.org||"")+(p.town?", "+p.town:"");box.appendChild(a);
+ var l=document.createElement("div");l.style.cssText="color:var(--mut);font-size:14px;margin-bottom:10px";l.textContent=(p.loc||"")+(p.sup?" - Supervisor: "+p.sup:"");box.appendChild(l);
+ var t=document.createElement("div");
+ if(d.trainer){t.className="msg ok";t.appendChild(document.createTextNode("Your college trainer: "));var n=document.createElement("b");n.textContent=d.trainer.name;t.appendChild(n);t.appendChild(document.createTextNode(" - "));var c=document.createElement("a");c.href="tel:"+d.trainer.tel;c.textContent=d.trainer.tel;c.style.cssText="color:inherit;font-weight:700";t.appendChild(c)}
+ else{t.className="msg info";t.textContent="Waiting for the Industrial Liaison Office to assign your trainer. It will appear here automatically."}
+ box.appendChild(t)}).catch(function(){})}
+loadMine();setInterval(loadMine,45000);document.addEventListener("visibilitychange",function(){if(!document.hidden)loadMine()});
 /* paints the letter onto a canvas from the browser's own layout of the preview: every word, line and image lands exactly where the preview shows it */
 function paintLetter(root,S){
  var W=794,H=1123,cv=document.createElement("canvas");cv.width=W*S;cv.height=H*S;

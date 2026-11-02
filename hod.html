@@ -127,6 +127,16 @@ header h1:after{content:"";display:block;width:64px;height:4px;border-radius:3px
 </section>
 
 <section class="panel" style="margin-top:18px">
+<h2>All responses (full details)</h2>
+<p class="lead">Every student who has sent their placement, with all their details. Search the list, or download everything.</p>
+<div class="actions" style="margin:0 0 10px"><button class="btn" id="rx" type="button">Download Excel (all details)</button><button class="btn sec" id="rv" type="button">Download CSV</button></div>
+<label for="rq">Search</label><input id="rq" placeholder="Name, admission, class, organization, town">
+<div class="hint" id="rc" style="margin:8px 0"></div>
+<div id="rl"></div>
+<div class="msg" id="rm" role="status"></div>
+</section>
+
+<section class="panel" style="margin-top:18px">
 <h2>Marks</h2>
 <p class="lead">Marks for all departments. Download one class, a whole department (sorted per class), or everything.</p>
 <div id="mkbox"></div>
@@ -225,4 +235,25 @@ $("xl").onclick=function(){if(!D.placements.length){say("m0","err","Nothing to d
  if(none.length)add("Waiting",[HEAD].concat(none.map(row)),wid);
  XLSX.writeFile(wb,"RVNP_students_by_trainer.xlsx")};
 $("signout").onclick=function(){sessionStorage.removeItem("rvnp_user");sessionStorage.removeItem("rvnp_user_role");location.href="/auth.html?role=staff"};
+
+/* ---- all responses with full details: list, Excel and CSV ---- */
+var RHEAD=["Student name","Admission number","Class","Department","Course","Phone 1","Phone 2","Organization","Where (landmark)","Town","Supervisor at organization","College trainer","Trainer phone","Submitted"];
+function rrow(p){var t=D.trainers.find(function(x){return x.id===p.tid})||{name:"",tel:""};return [p.n,p.a,p.cls||"",p.dept,p.course,p.tel1,p.tel2||"",p.org,p.loc,p.town,p.sup,t.name,t.tel,p.t?new Date(p.t).toLocaleDateString("en-GB"):""]}
+function drawRecs(){var q=$("rq").value.trim().toUpperCase(),rows=D.placements.filter(function(p){return !q||(p.n+" "+p.a+" "+(p.cls||"")+" "+p.org+" "+p.town+" "+p.course+" "+p.dept).toUpperCase().indexOf(q)>=0});
+ $("rc").textContent=D.placements.length+" student"+(D.placements.length===1?"":"s")+" responded"+(q?"; "+rows.length+" match your search":"")+(rows.length>50?" (showing the first 50)":"")+".";
+ $("rl").innerHTML=rows.slice(0,50).map(function(p){var r=rrow(p);return '<div class="card2"><b>'+esc(p.n)+'</b><span class="mut" style="display:block">'+esc(p.a)+(p.cls?' &middot; '+esc(p.cls):'')+' &middot; '+esc(p.dept)+'</span><span class="mut" style="display:block">'+esc(p.course)+'</span><span style="display:block">'+esc(p.org)+', '+esc(p.town)+'</span><span class="mut" style="display:block">'+esc(p.loc)+'</span><span class="mut" style="display:block">Supervisor: '+esc(p.sup)+' &middot; '+esc(p.tel1)+(p.tel2?' / '+esc(p.tel2):'')+'</span><span style="display:block;margin-top:4px">'+(r[11]?'Trainer: <b style="display:inline">'+esc(r[11])+'</b> ('+esc(r[12])+')':'<i>Waiting for a trainer</i>')+'</span></div>'}).join("")||'<p class="mut">No responses yet.</p>'}
+$("rq").oninput=drawRecs;
+var _draw=draw;draw=function(){_draw();drawRecs()};
+function sortedP(){return D.placements.slice().sort(function(a,b){return (a.cls||"").localeCompare(b.cls||"")||a.n.localeCompare(b.n)})}
+function csvOut(){var l=[RHEAD.join(",")].concat(sortedP().map(function(p){return rrow(p).map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(",")}));
+ var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="RVNP_placement_responses.csv";a.click()}
+$("rv").onclick=function(){if(!D.placements.length){say("rm","err","Nothing to download yet.");return}csvOut()};
+$("rx").onclick=function(){if(!D.placements.length){say("rm","err","Nothing to download yet.");return}
+ if(!window.XLSX){csvOut();say("rm","info","The Excel tool did not load, so a CSV file was downloaded instead.");return}
+ var P=sortedP(),by={},wb=XLSX.utils.book_new(),used={};P.forEach(function(p){(by[p.dept]=by[p.dept]||[]).push(p)});
+ var add=function(nm,aoa){nm=nm.replace(/[\\\/\?\*\[\]:]/g,"-").slice(0,28)||"Sheet";var k=nm,i=2;while(used[k])k=nm.slice(0,26)+"-"+i++;used[k]=1;var ws=XLSX.utils.aoa_to_sheet(aoa);ws["!cols"]=[30,20,16,28,34,14,14,28,36,14,24,24,14,12].map(function(x){return{wch:x}});XLSX.utils.book_append_sheet(wb,ws,k)};
+ var sum=[["Department","Students who responded","Assigned to a trainer"]].concat(Object.keys(by).sort().map(function(d){return [d,by[d].length,by[d].filter(function(p){return p.tid}).length]}));sum.push(["TOTAL",P.length,P.filter(function(p){return p.tid}).length]);
+ add("Summary",sum);add("All responses",[RHEAD].concat(P.map(rrow)));
+ Object.keys(by).sort().forEach(function(d){add(d,[RHEAD].concat(by[d].map(rrow)))});
+ XLSX.writeFile(wb,"RVNP_placement_responses.xlsx")};
 </script><script src="/marks.js"></script><script src="/pwa.js" defer></script></body></html>

@@ -50,7 +50,7 @@ const secret = () => {
 };
 const b64 = (b) => Buffer.from(b).toString("base64url");
 function makeToken() {
-  const body = b64(JSON.stringify({ exp: Date.now() + 12 * 3600 * 1000 }));
+  const body = b64(JSON.stringify({ typ: "admin", exp: Date.now() + 12 * 3600 * 1000 }));
   return body + "." + b64(createHmac("sha256", secret()).update(body).digest());
 }
 function validToken(t) {
@@ -59,7 +59,8 @@ function validToken(t) {
     const good = createHmac("sha256", secret()).update(body).digest();
     const got = Buffer.from(sig, "base64url");
     if (got.length !== good.length || !timingSafeEqual(got, good)) return false;
-    return JSON.parse(Buffer.from(body, "base64url").toString()).exp > Date.now();
+    const p = JSON.parse(Buffer.from(body, "base64url").toString());
+    return p.typ === "admin" && p.exp > Date.now();
   } catch { return false; }
 }
 function samePassword(input) {
@@ -263,7 +264,7 @@ export default async (req) => {
       const name=clean(body.name,120).toUpperCase(), adm=clean(body.adm,60).toUpperCase().replace(/\s+/g,"");
       const cls=clean(body.cls,40).toUpperCase(), dept=clean(body.dept,80), phone=digits(body.phone), pin=String(body.pin||"");
       if(name.length<3) throw new Bad("Enter your full name.");
-      if(!/^[A-Z]{3}\d\/\d{2}[A-Z]\/\d{6}$/.test(adm)) throw new Bad("Admission number must follow this format: EPL6/24S/404930");
+      if(!/^[A-Z0-9]{2,6}\/(\d{2}[A-Z]?\/)?\d{4,6}$/.test(adm)) throw new Bad("Enter your admission number as printed on your ID, with the slashes, e.g. EPL6/24S/404930");
       if(cls.length<2) throw new Bad("Enter your class.");
       if(!DEPTS.includes(dept) && dept !== OTHER) throw new Bad("Choose your department.");
       if(phone.replace(/\D/g,"").length<9) throw new Bad("Enter a valid phone number.");
@@ -334,7 +335,7 @@ export default async (req) => {
       const acct = await currentAccount(req,s); if(!requireRole(acct,["student"])) return fail("Please sign in as a student.",401);
       const all = await getJSON(s,"placements",{}), trainers = await getJSON(s,"trainers",{}), r = all[sid(acct.name,acct.adm)];
       const t = r && r.tid ? trainers[r.tid] : null;
-      return json({ hasPlacement:!!r, trainer:t?{name:t.name,tel:t.tel}:null });
+      return json({ hasPlacement:!!r, placement:r?{org:r.org,town:r.town,loc:r.loc,sup:r.sup,course:r.course}:null, trainer:t?{name:t.name,tel:t.tel}:null });
     }
     if (method === "POST" && path === "placement-search") {
       const q = clean(body.q, 60).toUpperCase(), compact = q.replace(/[^A-Z0-9]/g, "");
@@ -657,7 +658,7 @@ export default async (req) => {
 
     /* ----- ILO HOD / deputy HOD (access code) ----- */
     if (path === "hod" || path.startsWith("hod/")) {
-      const acct=await currentAccount(req,s); if (!requireRole(acct,["hod","deputy"])) { await new Promise((r) => setTimeout(r, 800)); return fail("Please sign in as an approved HOD or Deputy HOD.", 401); }
+      const acct=await currentAccount(req,s), admTok=(req.headers.get("authorization")||"").replace(/^Bearer /,""); if (!(admTok && validToken(admTok)) && !requireRole(acct,["hod","deputy"])) { await new Promise((r) => setTimeout(r, 800)); return fail("Please sign in as an approved HOD or Deputy HOD.", 401); }
       const all = await getJSON(s, "placements", {}), trainers = await getJSON(s, "trainers", {});
       const view = () => {
         const cnt = {};

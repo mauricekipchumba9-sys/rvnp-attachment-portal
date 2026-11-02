@@ -209,3 +209,31 @@ Green and white theme with orange accents (title underline, counters, selected t
 
 ### Visual colour update
 The portal uses a balanced green, orange and white palette: green remains the institutional identity and primary action colour; orange is used for highlights, selected navigation, secondary actions and status accents; white and soft neutral backgrounds keep pages clean and readable. Official print templates remain unchanged.
+
+
+## Latest corrections (read this first)
+
+**Security**
+- Sign-in tokens for students and staff were being accepted as administrator tokens, so any signed-in student could open the admin and HOD data. Administrator tokens are now a separate kind, and students, ILO representatives and the HOD can no longer reach admin data. Administrators must sign in again once after this update.
+- The administrator can now use the HOD data (the admin **Placements** tab was getting "401" before).
+
+**Students' main details are kept, not retyped**
+- At registration a student gives name, admission number, class, **department**, phone and a PIN. The placement page shows these locked, and the student only fills in: course, organization, where it is, supervisor, town and an optional second phone number. The server also ignores any attempt to change the locked details.
+- Admission numbers: the strict format rule rejected about half of the real numbers (for example DEET/25J/212371 and ES22/184248). It now accepts every real format (letters and digits, slashes, then 4 to 6 digits) and still rejects junk.
+- Students who registered before departments existed must register once more (same admission number) to add their department. Their PIN is reset to the new one.
+
+**Trainer shows up by itself**
+- No searching. The student's dashboard has a **Your attachment** card and the placement page has a trainer box. Both update on their own (every 45 seconds and when the page is opened again) as soon as the HOD assigns a trainer.
+- Students stay signed in on their own phone (they do not have to sign in again each time).
+
+**HOD, Deputy HOD and administrator can see and download every response**
+- HOD / Deputy HOD page: new **All responses (full details)** card with search, **Download Excel (all details)** and **Download CSV**. The Excel has a Summary sheet, an All responses sheet and one sheet per department. Columns: name, admission number, class, department, course, both phones, organization, where, town, supervisor, college trainer and trainer phone, and the date sent.
+- Admin page, **Placements** tab: the same full list, with Excel and CSV downloads.
+
+**Deployment**
+- `netlify.toml` now has `command = "node build.mjs"`. Without it Netlify never created the function and the whole site would answer with errors. Keep `build.mjs` and `package.json` at the top level with the other files.
+- A script error that stopped the admin page from finishing loading (it looked for a HOD link box that no longer exists) is fixed.
+
+## If sign-in shows "Unexpected end of JSON input" or "Unexpected response"
+
+This means the server function (`api.mjs`) is not running on Netlify. Keep `api.mjs` and `netlify.toml` at the top level of the repository (there is no build step and no `netlify/functions` folder). In Netlify open **Site configuration, Build and deploy**, clear the **Build command** and **Functions directory** if they are filled in, and check **Environment variables** has `ADMIN_PASSWORD`. Then **Deploys, Trigger deploy, Clear cache and deploy site**. Open `your-site/.netlify/functions/api/auth-info`: it should show a list of departments. If it shows "Page not found", the function was not deployed; check **Functions** in the Netlify menu for one named `api`.
